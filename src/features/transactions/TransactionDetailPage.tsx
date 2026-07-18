@@ -33,8 +33,7 @@ function TransactionDetailView() {
   // route, using the indicative FX rate captured at creation. Absent on
   // pre-enhancement sessions, so the columns degrade gracefully.
   const fxRate = Number(tx.metadata.indicativeFxRate);
-  const hasEconomics =
-    Number.isFinite(fxRate) && fxRate > 0 && (tx.route?.options.length ?? 0) > 0;
+  const hasEconomics = Number.isFinite(fxRate) && fxRate > 0 && (tx.route?.options.length ?? 0) > 0;
   const targetCcy = tx.metadata.targetCurrency ?? 'CHF';
   const money = (value: number, ccy: string) =>
     new Intl.NumberFormat('en-GB', { style: 'currency', currency: ccy }).format(value);
@@ -269,10 +268,14 @@ function TransactionDetailView() {
                 On indicative economics, <span className="font-medium">{bestReceived.label}</span>{' '}
                 delivers{' '}
                 <span className="font-medium text-ink">
-                  {money(bestReceived.estimatedReceived - worstReceived.estimatedReceived, targetCcy)}
+                  {money(
+                    bestReceived.estimatedReceived - worstReceived.estimatedReceived,
+                    targetCcy,
+                  )}
                 </span>{' '}
-                more to the beneficiary than <span className="font-medium">{worstReceived.label}</span>{' '}
-                (FX rate {fxRate.toFixed(4)} GBP→{targetCcy}, indicative only — not a quoted rate).
+                more to the beneficiary than{' '}
+                <span className="font-medium">{worstReceived.label}</span> (FX rate{' '}
+                {fxRate.toFixed(4)} GBP→{targetCcy}, indicative only — not a quoted rate).
               </p>
             )}
         </Card>

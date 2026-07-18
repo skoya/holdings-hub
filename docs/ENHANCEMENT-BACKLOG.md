@@ -22,7 +22,7 @@ Category: new capability / improves existing / fixes debt.
 
 - **Description**: The route comparison table shows raw `costBps` /
   `fxSpreadBps` / `feeFlat`, but never answers the question a treasurer
-  actually asks: *"how much arrives, and what did it cost me, on each rail?"*
+  actually asks: _"how much arrives, and what did it cost me, on each rail?"_
   Capture an indicative FX rate at transaction creation (one seeded draw from
   the `market` stream, stored on the transaction so rendering stays pure), then
   derive per-route all-in cost and estimated beneficiary-receives amounts, and
@@ -199,7 +199,7 @@ Category: new capability / improves existing / fixes debt.
   step lets the user compose holdings from the full Zod-validated asset
   catalogue (asset, quantity, custody location, authoritative source), with
   deterministic valuation through the existing `market` stream. Highest-effort
-  item here; valuable when a stakeholder wants to mirror *their* book live in
+  item here; valuable when a stakeholder wants to mirror _their_ book live in
   the room.
 - **Complexity**: L
 - **Value to demo**: Medium
