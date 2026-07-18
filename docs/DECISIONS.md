@@ -31,3 +31,19 @@ UTC timestamp — decision — rationale — alternatives considered.
 ## Milestone reflections
 
 (Appended at the end of each milestone.)
+
+## 2026-07-18T00:17Z — Toolchain upgraded to Vite 7 / Vitest 4 (stack substitution)
+
+The plan locked Vite 5 + Vitest 1 (Section 35), but at implementation time
+those lines carry unfixed security advisories that fail the `audit-ci
+--moderate` quality gate: esbuild dev-server request hijack (GHSA-67mh-4wv8-2f99,
+moderate), Vite dev-server file read (CVE-2026-39365, fixed only in 6.4.2+),
+launch-editor (moderate) and a critical Vitest UI/API RCE
+(GHSA-5xrq-8626-4rwp). All are dev-tooling only — the shipped static bundle
+contains none of this code — but Section 3 requires confirming advisories at
+implementation time and the gate must be green without allowlisting a
+critical. Upgraded: vite ^7.3.6, vitest ^4.1.10, @vitejs/plugin-react ^5.
+Alternatives considered: allowlisting the advisories in audit-ci (rejected —
+hides a critical, violates M8 "no open moderate+" gate); Vite 8 (rejected —
+newest major, plugin ecosystem still settling). App code unchanged; the only
+code delta was `defineConfig` now importing from 'vitest/config'.
