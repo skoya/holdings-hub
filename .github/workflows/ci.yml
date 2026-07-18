@@ -20,6 +20,7 @@ jobs:
       - run: pnpm run test:unit
       - run: pnpm run test:integration
       - run: pnpm run check:schemas
+      - run: pnpm run check:i18n
       - run: pnpm run audit:deps
       - run: pnpm run build
       - uses: actions/upload-artifact@v4

@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/Card';
 import { Badge } from '@/components/Badge';
 import { Chip } from '@/components/Chip';
+import { Button } from '@/components/Button';
 import { SessionGuard } from '@/features/common/SessionGuard';
 import { useSessionStore } from '@/stores/sessionStore';
 import { assetById } from '@/config/catalog';
@@ -25,6 +27,11 @@ function gbp(value: number): string {
 
 function HoldingsView() {
   const session = useSessionStore((s) => s.session)!;
+  const { t } = useTranslation();
+  const livePrices = useSessionStore((s) => s.livePrices);
+  const setLivePrices = useSessionStore((s) => s.setLivePrices);
+  const lastError = useSessionStore((s) => s.lastError);
+  const liveOn = session.settings.livePrices;
   const [classFilter, setClassFilter] = useState<AssetClass | 'all'>('all');
   const [sortDesc, setSortDesc] = useState(true);
 
@@ -89,6 +96,37 @@ function HoldingsView() {
           </ul>
         </Card>
       </div>
+
+      <Card
+        title={liveOn ? t('prices.live') : t('prices.deterministic')}
+        actions={
+          <Button
+            variant={liveOn ? 'secondary' : 'primary'}
+            className="!px-3 !py-1.5 text-xs"
+            onClick={() => void setLivePrices(!liveOn)}
+            data-testid="toggle-live-prices"
+          >
+            {liveOn ? t('prices.deterministic') : t('prices.live')}
+          </Button>
+        }
+      >
+        {liveOn && livePrices ? (
+          <ul className="flex flex-wrap gap-3 text-sm" data-testid="live-prices">
+            {Object.entries(livePrices).map(([symbol, usd]) => (
+              <li key={symbol} className="rounded border border-line px-2 py-1">
+                <span className="font-mono text-xs">{symbol}</span>{' '}
+                <span className="font-medium">${usd.toLocaleString('en-US')}</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-ink-soft">
+            {lastError && !liveOn ? t('prices.liveFailed') : t('prices.deterministic')} — CoinGecko
+            reference prices are a display overlay only and never affect the deterministic audit
+            trail.
+          </p>
+        )}
+      </Card>
 
       <Card
         title="Positions"

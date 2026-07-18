@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "Meridian Bank",
+    "subtitle": "Kunden-Bestandsübersicht"
+  },
+  "banner": {
+    "simulation": "Nur Simulation — keine echten Transaktionen oder Anlageberatung."
+  },
+  "nav": {
+    "home": "Start",
+    "holdings": "Bestände",
+    "transactions": "Transaktionen",
+    "timeline": "Zeitleiste",
+    "audit": "Prüfpfad",
+    "graph": "Graph",
+    "defi": "DeFi",
+    "library": "Bibliothek",
+    "styleguide": "Styleguide"
+  },
+  "language": {
+    "label": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch",
+    "fr": "Französisch",
+    "ja": "Japanisch"
+  },
+  "home": {
+    "heading": "Kunden-Bestandsübersicht",
+    "intro": "Wählen oder erstellen Sie eine Simulationssitzung, um Bestände, Zahlungen und Kontrollen über traditionelle und digitale Netzwerke hinweg zu erkunden."
+  },
+  "prices": {
+    "live": "Live-Preise",
+    "deterministic": "Deterministische Preise",
+    "liveFailed": "Live-Preise nicht verfügbar — deterministische Werte werden verwendet."
+  }
+}

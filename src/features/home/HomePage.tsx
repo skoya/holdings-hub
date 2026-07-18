@@ -1,19 +1,20 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/Card';
 import { Badge } from '@/components/Badge';
 import { useSessionStore } from '@/stores/sessionStore';
 
 export function HomePage() {
   const session = useSessionStore((s) => s.session);
+  const { t } = useTranslation();
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold">Client Holdings Hub</h1>
-        <p className="mt-1 text-ink-soft">
-          A simulation of how a global bank can act as the orchestration and trust hub across
-          traditional finance, regulated digital assets and tokenised finance.
-        </p>
+        <h1 className="text-xl font-semibold" data-testid="home-heading">
+          {t('home.heading')}
+        </h1>
+        <p className="mt-1 text-ink-soft">{t('home.intro')}</p>
       </div>
 
       {session ? (

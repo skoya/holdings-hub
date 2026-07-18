@@ -21,7 +21,9 @@
     "audit:deps": "audit-ci --moderate",
     "test:integration": "vitest run tests/integration",
     "e2e": "playwright test",
-    "check:schemas": "vitest run tests/config"
+    "check:schemas": "vitest run tests/config",
+    "check:i18n": "node scripts/check-i18n-keys.mjs",
+    "i18n:generate": "node scripts/translate.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

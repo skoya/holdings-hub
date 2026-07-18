@@ -6,6 +6,7 @@ import { addMinutes } from '@/engine/calendar';
 import { assertTransition, latencyMinutes } from '@/engine/lifecycle';
 import { buildRouteComparison } from '@/engine/routing';
 import { runScreening } from '@/engine/screening';
+import { fetchLivePrices } from '@/engine/marketData';
 import { evaluateTransaction, hasBlockingDecision, relationshipForType } from '@/engine/policy';
 import { buildTravelRulePacket } from '@/engine/travelRule';
 import { convert } from '@/engine/fx';
@@ -61,6 +62,10 @@ interface SessionStore {
   session: SimulationSession | null;
   engine: Engine | null;
   lastError: string | null;
+  /** Transient live reference prices (symbol → USD). Never persisted; the
+   * session only records which mode is active (settings.livePrices). */
+  livePrices: Record<string, number> | null;
+  setLivePrices: (enabled: boolean) => Promise<void>;
   createSliceSession: (input: WizardInput) => string;
   createDsvpDemo: () => string;
   adoptSession: (session: SimulationSession) => void;
@@ -177,6 +182,57 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     session: null,
     engine: null,
     lastError: null,
+    livePrices: null,
+
+    setLivePrices: async (enabled) => {
+      if (!enabled) {
+        set({ livePrices: null });
+        mutate((session, engine) =>
+          withAudit(
+            { ...session, settings: { ...session.settings, livePrices: false } },
+            engine,
+            'settings.live-prices-off',
+            `session:${session.id}`,
+          ),
+        );
+        return;
+      }
+      const { session } = get();
+      if (!session) throw new Error('No active session');
+      const symbols = [
+        ...new Set(
+          session.holdings
+            .map((h) => assetById(h.assetRef))
+            .filter((a) => a.class === 'crypto' || a.class === 'stablecoin')
+            .map((a) => a.symbol),
+        ),
+      ];
+      try {
+        const result = await fetchLivePrices(symbols, session.clock.currentTs);
+        set({ livePrices: result.prices, lastError: null });
+        mutate((s, engine) =>
+          withAudit(
+            { ...s, settings: { ...s.settings, livePrices: true } },
+            engine,
+            'settings.live-prices-on',
+            `session:${s.id}`,
+            `Live reference prices from CoinGecko (${Object.keys(result.prices).join(', ')})`,
+          ),
+        );
+      } catch {
+        // Deterministic fallback (Section 25) — never a hard failure.
+        set({ livePrices: null, lastError: 'Live prices unavailable — using deterministic values.' });
+        mutate((s, engine) =>
+          withAudit(
+            { ...s, settings: { ...s.settings, livePrices: false } },
+            engine,
+            'settings.live-prices-fallback',
+            `session:${s.id}`,
+            'CoinGecko unavailable; deterministic fallback',
+          ),
+        );
+      }
+    },
 
     createSliceSession: (input) => {
       const preset = scenarioPreset(input.presetId);
