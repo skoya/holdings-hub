@@ -24,6 +24,20 @@ export class UnsupportedSchemaError extends Error {
  */
 export const migrations: Record<number, Migration> = {
   0: (payload) => ({ ...(payload as Record<string, unknown>), schemaVersion: 1 }),
+  // v1 -> v2 (M2): add sim clock + active persona; expand transactions.
+  // v1 sessions had no transactions in practice, but any present lack the v2
+  // required fields and cannot be meaningfully upgraded — drop them with the
+  // information preserved in the audit log.
+  1: (payload) => {
+    const p = payload as Record<string, unknown>;
+    return {
+      ...p,
+      schemaVersion: 2,
+      clock: p['clock'] ?? { currentTs: '2026-01-05T09:00:00.000Z' },
+      activePersonaId: p['activePersonaId'] ?? null,
+      transactions: [],
+    };
+  },
 };
 
 export function runMigrations(fromVersion: number, payload: unknown): unknown {

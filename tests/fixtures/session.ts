@@ -1,5 +1,5 @@
 import { createEngine } from '@/engine/prng';
-import { SCHEMA_VERSION, type SimulationSession } from '@/schemas';
+import { SCHEMA_VERSION, SIM_EPOCH, type SimulationSession } from '@/schemas';
 
 /** Canonical valid session fixture used across schema/persistence tests. */
 export function makeSession(overrides: Partial<SimulationSession> = {}): SimulationSession {
@@ -12,6 +12,7 @@ export function makeSession(overrides: Partial<SimulationSession> = {}): Simulat
     schemaVersion: SCHEMA_VERSION,
     seed: 1234,
     engineState: engine.serialize(),
+    clock: { currentTs: SIM_EPOCH },
     entities: [
       {
         id: 'ent-1',
@@ -37,6 +38,7 @@ export function makeSession(overrides: Partial<SimulationSession> = {}): Simulat
         limits: { perTransaction: 1_000_000, daily: 5_000_000, currency: 'GBP' },
       },
     ],
+    activePersonaId: 'per-1',
     holdings: [
       {
         id: 'hld-1',

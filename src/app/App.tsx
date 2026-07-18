@@ -1,13 +1,34 @@
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './Layout';
 import { HomePage } from '@/features/home/HomePage';
 import { StyleguidePage } from '@/features/styleguide/StyleguidePage';
+import { WizardPage } from '@/features/wizard/WizardPage';
+import { HoldingsPage } from '@/features/holdings/HoldingsPage';
+import { TransactionsPage } from '@/features/transactions/TransactionsPage';
+import { NewPaymentPage } from '@/features/transactions/NewPaymentPage';
+import { NewUsdcPage } from '@/features/transactions/NewUsdcPage';
+import { TransactionDetailPage } from '@/features/transactions/TransactionDetailPage';
+import { TimelinePage } from '@/features/timeline/TimelinePage';
+import { AuditPage } from '@/features/audit/AuditPage';
+import { GraphPage } from '@/features/graph/GraphPage';
+import { LibraryPage } from '@/features/library/LibraryPage';
 
 export function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<HomePage />} />
+        <Route path="wizard" element={<Navigate to="/wizard/step/1" replace />} />
+        <Route path="wizard/step/:step" element={<WizardPage />} />
+        <Route path="holdings" element={<HoldingsPage />} />
+        <Route path="transactions" element={<TransactionsPage />} />
+        <Route path="transactions/new/payment" element={<NewPaymentPage />} />
+        <Route path="transactions/new/usdc" element={<NewUsdcPage />} />
+        <Route path="transactions/:txId" element={<TransactionDetailPage />} />
+        <Route path="timeline" element={<TimelinePage />} />
+        <Route path="audit" element={<AuditPage />} />
+        <Route path="graph" element={<GraphPage />} />
+        <Route path="library" element={<LibraryPage />} />
         <Route path="styleguide" element={<StyleguidePage />} />
         <Route
           path="*"

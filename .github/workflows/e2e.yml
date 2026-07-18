@@ -1,0 +1,33 @@
+name: e2e
+on:
+  push:
+    branches: [main]
+  pull_request: {}
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps ${{ matrix.project }}
+      - run: pnpm run build
+      - run: pnpm run e2e --project=${{ matrix.project }}
+        env:
+          CI: 'true'
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-${{ matrix.project }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
