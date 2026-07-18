@@ -1,7 +1,13 @@
 import { NavLink } from 'react-router-dom';
 import { useSessionStore } from '@/stores/sessionStore';
 
-const baseLinks = [
+interface NavItem {
+  to: string;
+  label: string;
+  end?: boolean;
+}
+
+const baseLinks: NavItem[] = [
   { to: '/', label: 'Home', end: true },
   { to: '/holdings', label: 'Holdings' },
   { to: '/transactions', label: 'Transactions' },
@@ -14,7 +20,7 @@ const baseLinks = [
 
 // DeFi is hidden by default (PLAN Section 13) — the nav entry only appears when
 // the active session has opted in.
-const defiLink = { to: '/defi', label: 'DeFi' };
+const defiLink: NavItem = { to: '/defi', label: 'DeFi' };
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `rounded px-2.5 py-1.5 text-sm transition-colors ${
