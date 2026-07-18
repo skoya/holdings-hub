@@ -18,7 +18,8 @@ function TimelineView() {
     return session.auditLog
       .filter((e) => {
         if (filter === 'all') return true;
-        if (filter === 'transaction') return e.action.startsWith('transaction.') || e.action.startsWith('route.');
+        if (filter === 'transaction')
+          return e.action.startsWith('transaction.') || e.action.startsWith('route.');
         if (filter === 'screening') return e.action.startsWith('screening.');
         return e.action.startsWith('session.') || e.action.startsWith('holdings.');
       })
@@ -61,7 +62,9 @@ function TimelineView() {
               </li>
             );
           })}
-          {items.length === 0 && <p className="text-sm text-ink-soft">No events for this filter.</p>}
+          {items.length === 0 && (
+            <p className="text-sm text-ink-soft">No events for this filter.</p>
+          )}
         </ol>
       </Card>
       <Badge tone="neutral">

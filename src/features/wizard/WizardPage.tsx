@@ -38,7 +38,10 @@ export function WizardPage() {
   const stepValid = (() => {
     switch (step) {
       case 1:
-        return draft.entityName.trim().length > 0 && JurisdictionSchema.safeParse(draft.jurisdiction).success;
+        return (
+          draft.entityName.trim().length > 0 &&
+          JurisdictionSchema.safeParse(draft.jurisdiction).success
+        );
       case 2:
         return draft.relationships.length > 0;
       case 3:
@@ -71,8 +74,7 @@ export function WizardPage() {
   };
 
   const labelCls = 'block text-sm font-medium mb-1';
-  const inputCls =
-    'w-full rounded border border-line bg-panel px-3 py-2 text-sm focus:border-dark';
+  const inputCls = 'w-full rounded border border-line bg-panel px-3 py-2 text-sm focus:border-dark';
 
   return (
     <div className="mx-auto max-w-2xl space-y-4">
@@ -160,8 +162,8 @@ export function WizardPage() {
       {step === 4 && (
         <Card title="Step 4 — Scenario seed">
           <p className="mb-3 text-sm text-ink-soft">
-            The seed drives every simulated outcome. Same seed + same actions ⇒ identical
-            holdings, screening results, ids and audit log.
+            The seed drives every simulated outcome. Same seed + same actions ⇒ identical holdings,
+            screening results, ids and audit log.
           </p>
           <label className={labelCls} htmlFor="seed">
             Deterministic seed

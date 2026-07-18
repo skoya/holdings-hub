@@ -87,7 +87,9 @@ describe('vertical slice integration (PLAN Section 40 M2)', () => {
 
     const gbpAfter = session.holdings.find((h) => h.assetRef === 'asset-gbp-cash')!.quantity;
     expect(gbpAfter).toBeLessThan(gbpBefore - 250_000); // amount + fees
-    expect(session.auditLog.filter((e) => e.objectRef === `tx:${txId}`).length).toBeGreaterThanOrEqual(6);
+    expect(
+      session.auditLog.filter((e) => e.objectRef === `tx:${txId}`).length,
+    ).toBeGreaterThanOrEqual(6);
     expect(SimulationSessionSchema.parse(session)).toBeTruthy();
   });
 

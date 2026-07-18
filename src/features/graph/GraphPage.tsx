@@ -116,7 +116,15 @@ function GraphView() {
             const pt = positions.get(t);
             if (!ps || !pt) return null;
             return (
-              <line key={i} x1={ps.x} y1={ps.y} x2={pt.x} y2={pt.y} stroke="var(--line)" strokeWidth={1.2} />
+              <line
+                key={i}
+                x1={ps.x}
+                y1={ps.y}
+                x2={pt.x}
+                y2={pt.y}
+                stroke="var(--line)"
+                strokeWidth={1.2}
+              />
             );
           })}
           {nodes.map((n) => {

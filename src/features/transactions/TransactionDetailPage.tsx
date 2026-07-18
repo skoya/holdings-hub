@@ -102,7 +102,9 @@ function TransactionDetailView() {
                 {tx.screening.outcome}
               </Badge>
               <p className="mt-2 text-ink-soft">{tx.screening.note}</p>
-              <p className="mt-1 text-xs text-ink-soft">Checked at {tx.screening.checkedAt} (UTC)</p>
+              <p className="mt-1 text-xs text-ink-soft">
+                Checked at {tx.screening.checkedAt} (UTC)
+              </p>
             </div>
           ) : (
             <p className="text-sm text-ink-soft">Runs during validation.</p>
@@ -150,7 +152,9 @@ function TransactionDetailView() {
                     <td className="py-2 pr-4 text-right">{o.feeFlat}</td>
                     <td className="py-2 pr-4 text-right">{o.fxSpreadBps}</td>
                     <td className="py-2 pr-4 text-right">
-                      {o.etaMinutes >= 60 ? `${Math.round(o.etaMinutes / 60)} h` : `${o.etaMinutes} min`}
+                      {o.etaMinutes >= 60
+                        ? `${Math.round(o.etaMinutes / 60)} h`
+                        : `${o.etaMinutes} min`}
                     </td>
                     <td className="py-2 pr-4">{o.settlementDate}</td>
                     <td className="py-2 pr-4">{o.cutoffNote}</td>

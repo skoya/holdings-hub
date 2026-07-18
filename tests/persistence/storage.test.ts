@@ -53,7 +53,11 @@ describe('persistence layer (PLAN Section 24)', () => {
   it('migrates an older envelope on load (v0 -> v1 -> v2 chain)', async () => {
     const session = makeSession({ id: 'legacy-1' });
     // Strip the v2-only fields to simulate a genuinely old payload.
-    const { clock: _clock, activePersonaId: _ap, ...legacyPayload } = {
+    const {
+      clock: _clock,
+      activePersonaId: _ap,
+      ...legacyPayload
+    } = {
       ...session,
       schemaVersion: 0,
     };

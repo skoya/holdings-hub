@@ -19,7 +19,10 @@ export function isBusinessDay(iso: string, jurisdiction: Jurisdiction): boolean 
  * destination jurisdiction (T+2 if initiated after the cut-off), settling at
  * the cut-off hour UTC.
  */
-export function fiatSettlementDate(nowIso: string, dest: Jurisdiction): {
+export function fiatSettlementDate(
+  nowIso: string,
+  dest: Jurisdiction,
+): {
   iso: string;
   note: string;
 } {

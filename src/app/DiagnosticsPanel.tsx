@@ -22,10 +22,7 @@ export function DiagnosticsPanel() {
   const session = useSessionStore((s) => s.session);
   const enabled = debugEnabled(location.search);
 
-  const stateHash = useMemo(
-    () => (session ? hashObject(session.engineState) : '—'),
-    [session],
-  );
+  const stateHash = useMemo(() => (session ? hashObject(session.engineState) : '—'), [session]);
 
   if (!enabled) return null;
 

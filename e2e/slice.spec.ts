@@ -42,7 +42,9 @@ test.describe('vertical slice golden path (Family Office CIO)', () => {
     await page.goto('/#/transactions/new/usdc');
     await page.getByTestId('create-usdc').click();
     await page.waitForURL(/#\/transactions\/tx-/);
-    await expect(page.getByTestId('travel-rule-packet')).toContainText('Meridian Bank Wallet Services');
+    await expect(page.getByTestId('travel-rule-packet')).toContainText(
+      'Meridian Bank Wallet Services',
+    );
     await expect(page.getByText('Required — ≥ 1000 USD')).toBeVisible();
     await page.getByTestId('btn-validate').click();
     await page.getByTestId('btn-approve').click();

@@ -57,8 +57,8 @@ function HoldingsView() {
       <div className="flex items-baseline justify-between">
         <h1 className="text-xl font-semibold">Holdings</h1>
         <span className="text-sm text-ink-soft">
-          {session.entities[0]?.name} · valuations as of {session.holdings[0]?.valuation.asOf}{' '}
-          (UTC, deterministic)
+          {session.entities[0]?.name} · valuations as of {session.holdings[0]?.valuation.asOf} (UTC,
+          deterministic)
         </span>
       </div>
 

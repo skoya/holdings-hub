@@ -433,7 +433,13 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           `holding:${tx.assetRef}`,
           `Debit ${tx.amount} ${tx.currency} + ${fee.toFixed(2)} fees (simulated)`,
         );
-        return transition(s, engine, txId, 'settled', route ? `Settled via ${route.label}` : undefined);
+        return transition(
+          s,
+          engine,
+          txId,
+          'settled',
+          route ? `Settled via ${route.label}` : undefined,
+        );
       });
     },
   };

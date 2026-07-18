@@ -34,8 +34,8 @@ function NewUsdcView() {
       <h1 className="text-xl font-semibold">New USDC transfer</h1>
       <Card>
         <p className="mb-3 text-sm text-ink-soft">
-          Simulated on-chain USDC transfer from the Meridian-custodied wallet. A Travel Rule
-          packet is generated when the amount meets the USD 1,000 threshold.
+          Simulated on-chain USDC transfer from the Meridian-custodied wallet. A Travel Rule packet
+          is generated when the amount meets the USD 1,000 threshold.
         </p>
         <label className={labelCls} htmlFor="amount">
           Amount (USDC)
