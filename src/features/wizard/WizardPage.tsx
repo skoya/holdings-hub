@@ -164,9 +164,9 @@ export function WizardPage() {
       {step === 3 && (
         <Card title="Step 3 — Persona">
           <p className="mb-3 text-sm text-ink-soft">
-            Persona role from the preset: <strong>{scenarioPreset(draft.presetId).personaRole}</strong>{' '}
-            with template entitlements and limits (editable overrides arrive with the M4 controls
-            work).
+            Persona role from the preset:{' '}
+            <strong>{scenarioPreset(draft.presetId).personaRole}</strong> with template entitlements
+            and limits (editable overrides arrive with the M4 controls work).
           </p>
           <label className={labelCls} htmlFor="personaName">
             Display name

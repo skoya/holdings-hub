@@ -82,7 +82,11 @@ export const DIAGRAM_DEFS: Record<string, DiagramDef> = Object.fromEntries(
           kind: 'annotation' as const,
         },
       ],
-      edges: [...happyEdges(), ...failureEdges, { from: 'validated', to: 'travel-rule', dashed: true }],
+      edges: [
+        ...happyEdges(),
+        ...failureEdges,
+        { from: 'validated', to: 'travel-rule', dashed: true },
+      ],
     },
     {
       id: 'dsvp-sequence',

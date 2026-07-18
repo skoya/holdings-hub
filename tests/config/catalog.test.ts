@@ -26,7 +26,16 @@ describe('configuration catalogue validation (PLAN Section 32)', () => {
     const ids = ASSETS.map((a) => a.id);
     expect(new Set(ids).size).toBe(ids.length);
     const classes = new Set(ASSETS.map((a) => a.class));
-    for (const cls of ['cash', 'equity', 'bond', 'fund', 'tokenised', 'stablecoin', 'crypto', 'defi']) {
+    for (const cls of [
+      'cash',
+      'equity',
+      'bond',
+      'fund',
+      'tokenised',
+      'stablecoin',
+      'crypto',
+      'defi',
+    ]) {
       expect(classes.has(cls as never), `missing asset class ${cls}`).toBe(true);
     }
   });
