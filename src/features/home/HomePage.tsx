@@ -21,7 +21,9 @@ export function HomePage() {
         <Card title="Active session">
           <dl className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-1 text-sm">
             <dt className="text-ink-soft">Session</dt>
-            <dd>{session.name}</dd>
+            <dd data-testid="session-id" data-session-id={session.id}>
+              {session.name}
+            </dd>
             <dt className="text-ink-soft">Entity</dt>
             <dd>
               {session.entities[0]?.name} ({session.entities[0]?.jurisdiction})
