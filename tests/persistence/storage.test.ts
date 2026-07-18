@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import {
   clearAllSessions,
   deleteSession,
+  duplicateSession,
   listSessions,
   loadSession,
+  renameSession,
   saveSession,
   writeRawEnvelope,
 } from '@/persistence/storage';
@@ -48,6 +50,27 @@ describe('persistence layer (PLAN Section 24)', () => {
   it('rejects saving a session that fails schema validation', async () => {
     const bad = { ...makeSession(), name: '' };
     await expect(saveSession(bad)).rejects.toThrow();
+  });
+
+  it('renames a stored session in place (M6)', async () => {
+    const session = makeSession();
+    await saveSession(session);
+    await renameSession(session.id, 'Renamed session');
+    const loaded = await loadSession(session.id);
+    expect(loaded!.name).toBe('Renamed session');
+  });
+
+  it('duplicates a session under a fresh id, replaying identically (M6)', async () => {
+    const session = makeSession();
+    await saveSession(session);
+    const newId = await duplicateSession(session.id);
+    expect(newId).not.toBe(session.id);
+    const copy = await loadSession(newId);
+    expect(copy!.id).toBe(newId);
+    expect(copy!.name).toBe(`${session.name} (copy)`);
+    // Engine state copied verbatim → identical replay basis.
+    expect(copy!.engineState).toEqual(session.engineState);
+    expect(await listSessions()).toHaveLength(2);
   });
 
   it('migrates an older envelope on load (v0 -> v1 -> v2 chain)', async () => {

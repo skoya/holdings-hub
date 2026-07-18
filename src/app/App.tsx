@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { Layout } from './Layout';
 import { HomePage } from '@/features/home/HomePage';
@@ -10,9 +11,14 @@ import { NewUsdcPage } from '@/features/transactions/NewUsdcPage';
 import { TransactionDetailPage } from '@/features/transactions/TransactionDetailPage';
 import { TimelinePage } from '@/features/timeline/TimelinePage';
 import { AuditPage } from '@/features/audit/AuditPage';
-import { GraphPage } from '@/features/graph/GraphPage';
 import { DefiPage } from '@/features/defi/DefiPage';
 import { LibraryPage } from '@/features/library/LibraryPage';
+import { SessionDeepLink } from '@/features/library/SessionDeepLink';
+
+// Code-split the D3-heavy entity graph off the initial bundle (PLAN Section 31).
+const GraphPage = lazy(() =>
+  import('@/features/graph/GraphPage').then((m) => ({ default: m.GraphPage })),
+);
 
 export function App() {
   return (
@@ -28,9 +34,19 @@ export function App() {
         <Route path="transactions/:txId" element={<TransactionDetailPage />} />
         <Route path="timeline" element={<TimelinePage />} />
         <Route path="audit" element={<AuditPage />} />
-        <Route path="graph" element={<GraphPage />} />
+        <Route
+          path="graph"
+          element={
+            <Suspense
+              fallback={<div className="p-8 text-sm text-ink-soft">Loading entity graph…</div>}
+            >
+              <GraphPage />
+            </Suspense>
+          }
+        />
         <Route path="defi" element={<DefiPage />} />
         <Route path="library" element={<LibraryPage />} />
+        <Route path="open/:id" element={<SessionDeepLink />} />
         <Route path="styleguide" element={<StyleguidePage />} />
         <Route
           path="*"

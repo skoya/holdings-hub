@@ -6,14 +6,17 @@ import { Badge } from '@/components/Badge';
 import { useSessionStore } from '@/stores/sessionStore';
 import {
   deleteSession,
+  duplicateSession,
   listSessions,
   loadSession,
+  renameSession,
   type SessionSummary,
 } from '@/persistence/storage';
+import { downloadBundleZip } from './bundle';
 
 /**
- * Simulation Library (PLAN Section 18) — M2 scope: list/load/delete plus JSON
- * export/import with round-trip guarantee. Duplicate/rename/ZIP bundles in M6.
+ * Simulation Library (PLAN Section 18). List/load/delete, JSON export/import
+ * with round-trip guarantee, plus M6 duplicate/rename and ZIP bundle export.
  */
 export function LibraryPage() {
   const navigate = useNavigate();
@@ -44,6 +47,29 @@ export function LibraryPage() {
   const remove = async (id: string) => {
     await deleteSession(id);
     refresh();
+  };
+
+  const rename = async (id: string, current: string) => {
+    const next = window.prompt('Rename session', current);
+    if (next && next.trim()) {
+      await renameSession(id, next.trim());
+      refresh();
+    }
+  };
+
+  const duplicate = async (id: string) => {
+    await duplicateSession(id);
+    refresh();
+  };
+
+  const bundle = async (id: string) => {
+    setError(null);
+    try {
+      const s = await loadSession(id);
+      if (s) await downloadBundleZip(s);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+    }
   };
 
   const exportActive = () => {
@@ -128,9 +154,30 @@ export function LibraryPage() {
                     )}
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button variant="secondary" onClick={() => void load(s.id)}>
                     Load
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => void rename(s.id, s.name)}
+                    data-testid="rename-session"
+                  >
+                    Rename
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => void duplicate(s.id)}
+                    data-testid="duplicate-session"
+                  >
+                    Duplicate
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={() => void bundle(s.id)}
+                    data-testid="bundle-session"
+                  >
+                    Bundle (ZIP)
                   </Button>
                   <Button variant="danger" onClick={() => void remove(s.id)}>
                     Delete

@@ -69,6 +69,26 @@ export async function deleteSession(id: string): Promise<void> {
   await store.removeItem(keyFor(id));
 }
 
+/** Rename a stored session in place (PLAN Section 18). */
+export async function renameSession(id: string, name: string): Promise<void> {
+  const session = await loadSession(id);
+  if (!session) throw new Error(`Session ${id} not found`);
+  await saveSession({ ...session, name });
+}
+
+/**
+ * Duplicate a stored session under a fresh id and name (PLAN Section 18).
+ * Returns the new session id. Engine state is copied verbatim, so the
+ * duplicate replays identically to its source.
+ */
+export async function duplicateSession(id: string): Promise<string> {
+  const session = await loadSession(id);
+  if (!session) throw new Error(`Session ${id} not found`);
+  const newId = `session-copy-${crypto.randomUUID().slice(0, 8)}`;
+  await saveSession({ ...session, id: newId, name: `${session.name} (copy)` });
+  return newId;
+}
+
 export async function listSessions(): Promise<SessionSummary[]> {
   const keys = await store.keys();
   const summaries: SessionSummary[] = [];
