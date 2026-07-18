@@ -56,6 +56,7 @@ export const PersonaRoleSchema = z.enum([
   'authorised-signatory',
   'portfolio-manager',
   'family-principal',
+  'external-auditor',
 ]);
 
 export const EntitlementLevelSchema = z.enum(['view', 'initiate', 'approve', 'admin']);

@@ -85,6 +85,19 @@ describe('configuration catalogue validation (PLAN Section 32)', () => {
       const session = useSessionStore.getState().session!;
       expect(session.holdings).toHaveLength(preset.portfolio.length);
       expect(session.personas[0]!.role).toBe(preset.personaRole);
+      expect(session.personas.map((persona) => persona.role)).toEqual(
+        expect.arrayContaining([
+          'treasurer',
+          'compliance-officer',
+          'operations-manager',
+          'external-auditor',
+        ]),
+      );
+      expect(
+        session.personas
+          .find((persona) => persona.role === 'external-auditor')
+          ?.grants.every((grant) => grant.level === 'view'),
+      ).toBe(true);
     }
   });
 

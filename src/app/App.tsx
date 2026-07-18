@@ -15,6 +15,7 @@ import { DefiPage } from '@/features/defi/DefiPage';
 import { LibraryPage } from '@/features/library/LibraryPage';
 import { SessionDeepLink } from '@/features/library/SessionDeepLink';
 import { MobilePage } from '@/features/mobile/MobilePage';
+import { PersonasPage } from '@/features/personas/PersonasPage';
 
 // Code-split the D3-heavy entity graph off the initial bundle (PLAN Section 31).
 const GraphPage = lazy(() =>
@@ -29,6 +30,7 @@ export function App() {
         <Route path="wizard" element={<Navigate to="/wizard/step/1" replace />} />
         <Route path="wizard/step/:step" element={<WizardPage />} />
         <Route path="holdings" element={<HoldingsPage />} />
+        <Route path="personas" element={<PersonasPage />} />
         <Route path="transactions" element={<TransactionsPage />} />
         <Route path="transactions/new/payment" element={<NewPaymentPage />} />
         <Route path="transactions/new/usdc" element={<NewUsdcPage />} />

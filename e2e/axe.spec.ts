@@ -24,6 +24,7 @@ test('axe: no serious/critical violations on session views', async ({ page }) =>
   // including the mobile companion, the DeFi module and the payment forms.
   for (const route of [
     '/#/holdings',
+    '/#/personas',
     '/#/transactions',
     '/#/transactions/new/payment',
     '/#/transactions/new/usdc',
