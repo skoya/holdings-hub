@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "Meridian Bank",
+    "subtitle": "Client Holdings Hub"
+  },
+  "banner": {
+    "simulation": "Simulation only — no real transactions or investment advice."
+  },
+  "nav": {
+    "home": "Home",
+    "holdings": "Holdings",
+    "transactions": "Transactions",
+    "timeline": "Timeline",
+    "audit": "Audit",
+    "graph": "Graph",
+    "defi": "DeFi",
+    "library": "Library",
+    "styleguide": "Styleguide"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "de": "German",
+    "fr": "French",
+    "ja": "Japanese"
+  },
+  "home": {
+    "heading": "Client Holdings Hub",
+    "intro": "Select or create a simulation session to explore holdings, payments and controls across traditional and digital networks."
+  },
+  "prices": {
+    "live": "Live prices",
+    "deterministic": "Deterministic prices",
+    "liveFailed": "Live prices unavailable — using deterministic values."
+  }
+}

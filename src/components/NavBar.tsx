@@ -1,26 +1,28 @@
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useSessionStore } from '@/stores/sessionStore';
+import { LanguageSwitcher } from './LanguageSwitcher';
 
 interface NavItem {
   to: string;
-  label: string;
+  labelKey: string;
   end?: boolean;
 }
 
 const baseLinks: NavItem[] = [
-  { to: '/', label: 'Home', end: true },
-  { to: '/holdings', label: 'Holdings' },
-  { to: '/transactions', label: 'Transactions' },
-  { to: '/timeline', label: 'Timeline' },
-  { to: '/audit', label: 'Audit' },
-  { to: '/graph', label: 'Graph' },
-  { to: '/library', label: 'Library' },
-  { to: '/styleguide', label: 'Styleguide' },
+  { to: '/', labelKey: 'nav.home', end: true },
+  { to: '/holdings', labelKey: 'nav.holdings' },
+  { to: '/transactions', labelKey: 'nav.transactions' },
+  { to: '/timeline', labelKey: 'nav.timeline' },
+  { to: '/audit', labelKey: 'nav.audit' },
+  { to: '/graph', labelKey: 'nav.graph' },
+  { to: '/library', labelKey: 'nav.library' },
+  { to: '/styleguide', labelKey: 'nav.styleguide' },
 ];
 
 // DeFi is hidden by default (PLAN Section 13) — the nav entry only appears when
 // the active session has opted in.
-const defiLink: NavItem = { to: '/defi', label: 'DeFi' };
+const defiLink: NavItem = { to: '/defi', labelKey: 'nav.defi' };
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   `rounded px-2.5 py-1.5 text-sm transition-colors ${
@@ -28,6 +30,7 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 export function NavBar() {
+  const { t } = useTranslation();
   const defiEnabled = useSessionStore((s) => s.session?.settings.defiEnabled ?? false);
   const links = defiEnabled
     ? [...baseLinks.slice(0, 6), defiLink, ...baseLinks.slice(6)]
@@ -39,14 +42,15 @@ export function NavBar() {
         className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-2 px-4 py-3"
       >
         <NavLink to="/" className="text-lg font-semibold tracking-tight">
-          Meridian Bank <span className="font-normal text-white/70">— Client Holdings Hub</span>
+          {t('app.title')} <span className="font-normal text-white/70">— {t('app.subtitle')}</span>
         </NavLink>
         <div className="flex flex-wrap items-center gap-1">
           {links.map((l) => (
             <NavLink key={l.to} to={l.to} end={l.end} className={linkClass}>
-              {l.label}
+              {t(l.labelKey)}
             </NavLink>
           ))}
+          <LanguageSwitcher />
         </div>
       </nav>
     </header>

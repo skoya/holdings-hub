@@ -30,17 +30,31 @@ export function fiatSettlementDate(
   const missedCutoff = now.getUTCHours() >= FIAT_CUTOFF_UTC_HOUR;
   let candidate = new Date(now.getTime());
   let daysToAdd = missedCutoff ? 2 : 1;
+  const skipped: string[] = [];
   while (daysToAdd > 0) {
     candidate = new Date(candidate.getTime() + DAY_MS);
-    if (isBusinessDay(candidate.toISOString(), dest)) daysToAdd -= 1;
+    const key = dateKey(candidate);
+    const dow = candidate.getUTCDay();
+    if (dow === 0 || dow === 6) {
+      skipped.push(`${key} (weekend)`);
+      continue;
+    }
+    if (HOLIDAYS_2026[dest].includes(key)) {
+      skipped.push(`${key} (${dest} holiday)`);
+      continue;
+    }
+    daysToAdd -= 1;
   }
   candidate.setUTCHours(FIAT_CUTOFF_UTC_HOUR, 0, 0, 0);
   const skippedNote = missedCutoff
     ? `initiated after ${FIAT_CUTOFF_UTC_HOUR}:00 UTC cut-off — value date slips a day`
     : `before ${FIAT_CUTOFF_UTC_HOUR}:00 UTC cut-off`;
+  const reason = skipped.length
+    ? `; skipped ${skipped.join(', ')} in ${dest}`
+    : `; no ${dest} non-business days in the way`;
   return {
     iso: candidate.toISOString(),
-    note: `${skippedNote}; weekends/holidays in destination skipped`,
+    note: `${skippedNote}${reason}`,
   };
 }
 

@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "Meridian Bank",
+    "subtitle": "顧客保有資産ハブ"
+  },
+  "banner": {
+    "simulation": "シミュレーションのみ — 実際の取引や投資助言はありません。"
+  },
+  "nav": {
+    "home": "ホーム",
+    "holdings": "保有資産",
+    "transactions": "取引",
+    "timeline": "タイムライン",
+    "audit": "監査",
+    "graph": "グラフ",
+    "defi": "DeFi",
+    "library": "ライブラリ",
+    "styleguide": "スタイルガイド"
+  },
+  "language": {
+    "label": "言語",
+    "en": "英語",
+    "de": "ドイツ語",
+    "fr": "フランス語",
+    "ja": "日本語"
+  },
+  "home": {
+    "heading": "顧客保有資産ハブ",
+    "intro": "シミュレーションセッションを選択または作成して、従来型およびデジタルネットワーク全体の保有資産、支払い、コントロールを確認します。"
+  },
+  "prices": {
+    "live": "ライブ価格",
+    "deterministic": "確定的価格",
+    "liveFailed": "ライブ価格を利用できません — 確定的な値を使用します。"
+  }
+}

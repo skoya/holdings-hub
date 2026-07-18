@@ -1,0 +1,36 @@
+{
+  "app": {
+    "title": "Meridian Bank",
+    "subtitle": "Hub des avoirs clients"
+  },
+  "banner": {
+    "simulation": "Simulation uniquement — aucune transaction réelle ni conseil en investissement."
+  },
+  "nav": {
+    "home": "Accueil",
+    "holdings": "Avoirs",
+    "transactions": "Transactions",
+    "timeline": "Chronologie",
+    "audit": "Audit",
+    "graph": "Graphe",
+    "defi": "DeFi",
+    "library": "Bibliothèque",
+    "styleguide": "Styleguide"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "Anglais",
+    "de": "Allemand",
+    "fr": "Français",
+    "ja": "Japonais"
+  },
+  "home": {
+    "heading": "Hub des avoirs clients",
+    "intro": "Sélectionnez ou créez une session de simulation pour explorer les avoirs, les paiements et les contrôles sur les réseaux traditionnels et numériques."
+  },
+  "prices": {
+    "live": "Prix en direct",
+    "deterministic": "Prix déterministes",
+    "liveFailed": "Prix en direct indisponibles — utilisation de valeurs déterministes."
+  }
+}
