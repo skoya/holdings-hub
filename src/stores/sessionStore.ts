@@ -320,6 +320,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'cross-border-payment',
@@ -364,6 +365,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'stablecoin-transfer',
@@ -421,6 +423,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'dsvp-settlement',
