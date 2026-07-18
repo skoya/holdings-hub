@@ -103,6 +103,32 @@ describe('vertical slice integration (PLAN Section 40 M2)', () => {
     expect(SimulationSessionSchema.parse(session)).toBeTruthy();
   });
 
+  it('captures a stable indicative FX rate on the payment (rail economics)', () => {
+    const makePayment = () => {
+      useSessionStore.getState().clearSession();
+      useSessionStore.getState().createSliceSession(WIZARD);
+      const id = useSessionStore.getState().createPayment({
+        amount: 250_000,
+        currency: 'GBP',
+        beneficiaryName: 'Helvetia Estates AG',
+        beneficiaryInstitution: 'External Bank Zurich (fictional)',
+        beneficiaryJurisdiction: 'CH',
+      });
+      return useSessionStore.getState().session!.transactions.find((t) => t.id === id)!;
+    };
+
+    const tx = makePayment();
+    const rate = Number(tx.metadata.indicativeFxRate);
+    expect(tx.metadata.targetCurrency).toBe('CHF');
+    expect(Number.isFinite(rate)).toBe(true);
+    expect(rate).toBeGreaterThan(1.1);
+    expect(rate).toBeLessThan(1.14);
+
+    // Deterministic: same seed + same action ⇒ identical captured rate.
+    const again = makePayment();
+    expect(again.metadata.indicativeFxRate).toBe(tx.metadata.indicativeFxRate);
+  });
+
   it('blocks screening-hit beneficiaries and fails the transaction', () => {
     useSessionStore.getState().createSliceSession(WIZARD);
     const txId = useSessionStore.getState().createPayment({

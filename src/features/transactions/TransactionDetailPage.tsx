@@ -5,6 +5,7 @@ import { Card } from '@/components/Card';
 import { Badge } from '@/components/Badge';
 import { SessionGuard } from '@/features/common/SessionGuard';
 import { useSessionStore } from '@/stores/sessionStore';
+import { routeEconomics } from '@/engine/routing';
 import { stateTone } from './TransactionsPage';
 
 const LifecycleDiagram = lazy(() =>
@@ -27,6 +28,31 @@ function TransactionDetailView() {
   }
 
   const auditForTx = session.auditLog.filter((e) => e.objectRef === `tx:${tx.id}`);
+
+  // Rail economics (enhancement): all-in cost + "beneficiary receives" per
+  // route, using the indicative FX rate captured at creation. Absent on
+  // pre-enhancement sessions, so the columns degrade gracefully.
+  const fxRate = Number(tx.metadata.indicativeFxRate);
+  const hasEconomics =
+    Number.isFinite(fxRate) && fxRate > 0 && (tx.route?.options.length ?? 0) > 0;
+  const targetCcy = tx.metadata.targetCurrency ?? 'CHF';
+  const money = (value: number, ccy: string) =>
+    new Intl.NumberFormat('en-GB', { style: 'currency', currency: ccy }).format(value);
+  const econByRoute = hasEconomics
+    ? (tx.route?.options ?? []).map((o) => ({
+        id: o.id,
+        label: o.label,
+        ...routeEconomics(o, tx.amount, fxRate),
+      }))
+    : [];
+  const bestReceived = econByRoute.reduce(
+    (best, e) => (best === null || e.estimatedReceived > best.estimatedReceived ? e : best),
+    null as (typeof econByRoute)[number] | null,
+  );
+  const worstReceived = econByRoute.reduce(
+    (worst, e) => (worst === null || e.estimatedReceived < worst.estimatedReceived ? e : worst),
+    null as (typeof econByRoute)[number] | null,
+  );
 
   return (
     <div className="space-y-4">
@@ -177,6 +203,10 @@ function TransactionDetailView() {
                   <th className="py-2 pr-4 text-right">Cost (bps)</th>
                   <th className="py-2 pr-4 text-right">Flat fee</th>
                   <th className="py-2 pr-4 text-right">FX spread (bps)</th>
+                  {hasEconomics && <th className="py-2 pr-4 text-right">All-in cost</th>}
+                  {hasEconomics && (
+                    <th className="py-2 pr-4 text-right">Est. receives ({targetCcy})</th>
+                  )}
                   <th className="py-2 pr-4 text-right">ETA</th>
                   <th className="py-2 pr-4">Settlement (UTC)</th>
                   <th className="py-2 pr-4">Cut-off / calendar</th>
@@ -202,6 +232,19 @@ function TransactionDetailView() {
                     <td className="py-2 pr-4 text-right">{o.costBps}</td>
                     <td className="py-2 pr-4 text-right">{o.feeFlat}</td>
                     <td className="py-2 pr-4 text-right">{o.fxSpreadBps}</td>
+                    {hasEconomics && (
+                      <td className="py-2 pr-4 text-right">
+                        {money(routeEconomics(o, tx.amount, fxRate).totalCost, tx.currency)}
+                      </td>
+                    )}
+                    {hasEconomics && (
+                      <td
+                        className="py-2 pr-4 text-right font-medium"
+                        data-testid={`route-received-${o.rail}`}
+                      >
+                        {money(routeEconomics(o, tx.amount, fxRate).estimatedReceived, targetCcy)}
+                      </td>
+                    )}
                     <td className="py-2 pr-4 text-right">
                       {o.etaMinutes >= 60
                         ? `${Math.round(o.etaMinutes / 60)} h`
@@ -215,6 +258,23 @@ function TransactionDetailView() {
               </tbody>
             </table>
           </div>
+          {hasEconomics &&
+            bestReceived &&
+            worstReceived &&
+            bestReceived.id !== worstReceived.id && (
+              <p
+                className="mt-3 rounded bg-bg p-3 text-sm text-ink-soft"
+                data-testid="route-economics-delta"
+              >
+                On indicative economics, <span className="font-medium">{bestReceived.label}</span>{' '}
+                delivers{' '}
+                <span className="font-medium text-ink">
+                  {money(bestReceived.estimatedReceived - worstReceived.estimatedReceived, targetCcy)}
+                </span>{' '}
+                more to the beneficiary than <span className="font-medium">{worstReceived.label}</span>{' '}
+                (FX rate {fxRate.toFixed(4)} GBP→{targetCcy}, indicative only — not a quoted rate).
+              </p>
+            )}
         </Card>
       )}
 
