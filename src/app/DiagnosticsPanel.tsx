@@ -61,7 +61,9 @@ export function DiagnosticsPanel() {
         <dt className="text-white/60">Locale</dt>
         <dd>{session?.settings.locale ?? '—'}</dd>
         <dt className="text-white/60">Price mode</dt>
-        <dd>{session ? (session.settings.livePrices ? 'live (overlay)' : 'deterministic') : '—'}</dd>
+        <dd>
+          {session ? (session.settings.livePrices ? 'live (overlay)' : 'deterministic') : '—'}
+        </dd>
         <dt className="text-white/60">DeFi module</dt>
         <dd>{session ? (session.settings.defiEnabled ? 'enabled' : 'disabled') : '—'}</dd>
         <dt className="text-white/60">Audit events</dt>

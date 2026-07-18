@@ -15,15 +15,7 @@ function csvCell(value: string): string {
 export function buildAuditCsv(session: SimulationSession): string {
   const header = ['id', 'ts', 'actorPersonaId', 'action', 'objectRef', 'snapshotHash', 'rationale'];
   const rows = session.auditLog.map((e) =>
-    [
-      e.id,
-      e.ts,
-      e.actorPersonaId ?? '',
-      e.action,
-      e.objectRef,
-      e.snapshotHash,
-      e.rationale ?? '',
-    ]
+    [e.id, e.ts, e.actorPersonaId ?? '', e.action, e.objectRef, e.snapshotHash, e.rationale ?? '']
       .map((v) => csvCell(String(v)))
       .join(','),
   );
