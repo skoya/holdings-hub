@@ -1,4 +1,3 @@
-import JSZip from 'jszip';
 import type { SimulationSession } from '@/schemas';
 
 /**
@@ -66,6 +65,8 @@ export function bundleFiles(session: SimulationSession): Record<string, string> 
 }
 
 export async function buildBundleZip(session: SimulationSession): Promise<Blob> {
+  // Dynamic import keeps jszip out of the initial bundle (PLAN Section 31).
+  const { default: JSZip } = await import('jszip');
   const zip = new JSZip();
   for (const [name, content] of Object.entries(bundleFiles(session))) {
     zip.file(name, content);
