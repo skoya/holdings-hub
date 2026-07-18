@@ -220,8 +220,9 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           ),
         );
       } catch {
-        // Deterministic fallback (Section 25) — never a hard failure.
-        set({ livePrices: null, lastError: 'Live prices unavailable — using deterministic values.' });
+        // Deterministic fallback (Section 25) — never a hard failure. Record
+        // the mode first (mutate clears lastError on success), then surface the
+        // fallback message so the UI can explain it.
         mutate((s, engine) =>
           withAudit(
             { ...s, settings: { ...s.settings, livePrices: false } },
@@ -231,6 +232,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             'CoinGecko unavailable; deterministic fallback',
           ),
         );
+        set({ livePrices: null, lastError: 'Live prices unavailable — using deterministic values.' });
       }
     },
 
