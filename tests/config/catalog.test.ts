@@ -101,6 +101,41 @@ describe('configuration catalogue validation (PLAN Section 32)', () => {
     }
   });
 
+  it('backfills operational personas when adopting a pre-workbench session', () => {
+    useSessionStore.getState().clearSession();
+    useSessionStore.getState().createSliceSession({
+      presetId: 'family-office-cio',
+      sessionName: 'Legacy session',
+      entityName: 'Legacy Entity',
+      jurisdiction: 'GB',
+      relationships: ['custody', 'payments'],
+      personaDisplayName: 'Legacy CIO',
+      seed: 42,
+    });
+    const current = useSessionStore.getState().session!;
+    const legacy = {
+      ...current,
+      personas: current.personas.filter(
+        (persona) =>
+          !['treasurer', 'compliance-officer', 'operations-manager', 'external-auditor'].includes(
+            persona.role,
+          ),
+      ),
+    };
+
+    useSessionStore.getState().adoptSession(legacy);
+    const adopted = useSessionStore.getState().session!;
+    expect(adopted.personas.map((persona) => persona.role)).toEqual(
+      expect.arrayContaining([
+        'treasurer',
+        'compliance-officer',
+        'operations-manager',
+        'external-auditor',
+      ]),
+    );
+    expect(adopted.auditLog.at(-1)?.action).toBe('session.personas-upgraded');
+  });
+
   it('diagram definitions are valid and mapped for every flow family', () => {
     expect(Object.keys(DIAGRAM_DEFS).length).toBeGreaterThanOrEqual(3);
     // Every edge endpoint must reference a defined node.
