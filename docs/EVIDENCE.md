@@ -1,0 +1,34 @@
+# Evidence Register — Holdings Hub Prototype
+
+Real-world references supporting the simulated concepts (PLAN Section 27).
+Real institutions appear here as citations only; the product UI is fictional
+(Meridian Bank). Each entry: claim supported — source — URL — date checked.
+
+| # | Claim supported | Source | URL | Checked |
+|---|---|---|---|---|
+| 1 | Travel Rule data-exchange requirements for VASPs underpin the simulated Travel Rule packet | FATF Recommendation 16 / Updated Guidance for a Risk-Based Approach to VAs and VASPs | https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-rba-virtual-assets-2021.html | 2026-07-18 |
+| 2 | EU regulatory regime for crypto-assets and stablecoins (CASP licensing, e-money tokens) | Regulation (EU) 2023/1114 (MiCA) | https://eur-lex.europa.eu/eli/reg/2023/1114/oj | 2026-07-18 |
+| 3 | Banks exploring tokenised cross-border settlement on unified ledgers | BIS Project Agorá | https://www.bis.org/about/bisih/topics/fmis/agora.htm | 2026-07-18 |
+| 4 | Regulated asset tokenisation pilots across asset classes | MAS Project Guardian | https://www.mas.gov.sg/schemes-and-initiatives/project-guardian | 2026-07-18 |
+| 5 | Large bank running production blockchain payments/tokenisation platform | J.P. Morgan Kinexys (formerly Onyx) | https://www.jpmorgan.com/kinexys | 2026-07-18 |
+| 6 | Tokenised money market fund with on-chain shares | BlackRock BUIDL (BlackRock USD Institutional Digital Liquidity Fund) | https://securitize.io/buidl | 2026-07-18 |
+| 7 | Tokenised MMF registered as transfer-agent ledger on public chains | Franklin Templeton OnChain U.S. Government Money Fund (BENJI) | https://www.franklintempleton.com/investments/options/money-market-funds/products/29386/SINGLCLASS/franklin-on-chain-u-s-government-money-fund/FOBXX | 2026-07-18 |
+| 8 | Regulated digital-asset exchange and CSD infrastructure operated by a bank group | SIX Digital Exchange (SDX) | https://www.sdx.com | 2026-07-18 |
+| 9 | Fiat-referenced stablecoin with monthly reserve attestations | Circle USDC reserve attestations | https://www.circle.com/en/transparency | 2026-07-18 |
+| 10 | Euro-denominated e-money token issued under EU rules | Circle EURC | https://www.circle.com/en/eurc | 2026-07-18 |
+| 11 | Wholesale settlement in tokenised central-bank-money-backed instrument | Fnality International | https://www.fnality.org | 2026-07-18 |
+| 12 | Multi-bank shared-ledger FX/payments settlement network | Partior | https://www.partior.com | 2026-07-18 |
+| 13 | Concept of regulated tokenised liabilities across institutions | Regulated Liability Network (RLN) UK/US experiments | https://regulatedliabilitynetwork.org | 2026-07-18 |
+| 14 | Distributed ledger repo settlement at scale in production | Broadridge Distributed Ledger Repo (DLR) | https://www.broadridge.com/press-release/2021/broadridge-launches-dlt-repo-platform | 2026-07-18 |
+| 15 | Collateral mobility via tokenised securities lending | HQLAᵡ | https://www.hqla-x.com | 2026-07-18 |
+| 16 | Prudential treatment of banks' cryptoasset exposures | Basel Committee SCO60 (cryptoasset standard) | https://www.bis.org/basel_framework/chapter/SCO/60.htm | 2026-07-18 |
+| 17 | UK regime for cryptoasset registration and financial promotions | FCA cryptoasset registration & promotions rules | https://www.fca.org.uk/firms/cryptoassets | 2026-07-18 |
+| 18 | International standards for stablecoin arrangements as FMIs | CPMI-IOSCO guidance on stablecoin arrangements | https://www.bis.org/cpmi/publ/d198.htm | 2026-07-18 |
+| 19 | Wholesale CBDC settlement trials with commercial banks | BIS/SNB Project Helvetia | https://www.bis.org/publ/othp35.htm | 2026-07-18 |
+| 20 | Cross-border multi-CBDC platform experiments | Project mBridge (BIS Innovation Hub) | https://www.bis.org/about/bisih/topics/cbdc/mcbdc_bridge.htm | 2026-07-18 |
+| 21 | Structured financial messaging standard used for payment simulation fields | ISO 20022 | https://www.iso20022.org | 2026-07-18 |
+| 22 | Interlinking existing rails with tokenised/CBDC networks | Swift CBDC sandbox/connector experiments | https://www.swift.com/news-events/news/swift-cbdc-sandbox-project | 2026-07-18 |
+| 23 | Bank-issued tokenised deposits for corporate treasury payments | J.P. Morgan JPM Coin / deposit token work | https://www.jpmorgan.com/kinexys/digital-payments | 2026-07-18 |
+| 24 | Continuous 24/7 settlement contrast vs T+1 securities settlement cycles | US move to T+1 settlement (SEC rule) | https://www.sec.gov/rules/final/2023/34-96930.pdf | 2026-07-18 |
+
+Expansion policy: +3 or more entries per milestone, completed register by M8.
