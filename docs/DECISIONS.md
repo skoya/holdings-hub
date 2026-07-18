@@ -180,3 +180,53 @@ session 2; session 1 tagged `v0.5.0-m5` and `v0.6.0-m6` without appending them.
   out of scope. Screen-reader verification is a structural/axe-enforced pass,
   not a live NVDA/VoiceOver run (no assistive-tech hardware in the build
   environment) — documented as such in the checklist.
+
+## 2026-07-18T06:45Z — M8 decisions (hardening + v1.0.0 release)
+
+- **CSP injected at build time, not in the source HTML.** A build-only Vite
+  plugin (`cspPlugin`, `apply: 'build'`) prepends the Content-Security-Policy
+  meta tag so the deployed bundle is locked down (`default-src 'self'`, plus the
+  CoinGecko origin in `connect-src` for the optional live-price overlay) without
+  breaking Vite dev's inline HMR scripts. `style-src` keeps `'unsafe-inline'`
+  because React and xyflow render inline style attributes; a static site has no
+  script-injection sink — import is the only untrusted input and is Zod-parsed.
+- **Import fuzz suite guards the one untrusted boundary** (`tests/schemas/
+fuzz.test.ts`): hostile/malformed payloads are rejected via `safeParse`;
+  `__proto__`/`constructor` payloads do not pollute `Object.prototype` (Zod
+  strips unknown keys); a 10k-deep object is rejected without a stack overflow.
+  The 5 MB size cap stays at the UI boundary (`LibraryPage`).
+- **`security.yml` is the fourth workflow** (PLAN Section 39.4): weekly + on
+  dispatch it runs `pnpm audit`, the `audit-ci` gate, the licence allowlist and
+  the Google OSV scanner. OSV is skipped on PRs (it is the deep weekly triage;
+  the deterministic `audit-ci` + licence gates run on PRs) so a transitive
+  advisory never blocks a merge silently.
+- **Licence gate without a new dependency.** `scripts/check-licenses.mjs` shells
+  pnpm's built-in `pnpm licenses list --json --prod` and fails only on
+  copyleft/network-copyleft production licences (permissive allowlist; unknowns
+  warn, not fail) — no `license-checker` dependency, no network, no secret.
+- **Evidence Register completed and mirrored.** Expanded to 40 real entries
+  (M5–M8 additions: Intl/ECMA-402, CoinGecko, IndexedDB, WCAG 2.1, WAI-ARIA,
+  axe-core, CSP, OWASP prototype-pollution, OSV, ASVS). `docs/evidence.json` is
+  generated from the markdown by `scripts/build-evidence-json.mjs` so the two
+  never drift.
+- **Screenshots as CI artefacts.** `e2e/screenshots.spec.ts` captures the key
+  routes (Chromium only) to `screenshots/`, uploaded by `e2e.yml` with
+  `if: always()`. The live site remains the reference artefact; committing
+  binary PNGs into the repo was rejected as history bloat.
+
+### M8 reflection — project complete (v1.0.0)
+
+- **Shipped** (`v0.8.0-m8` → `v1.0.0`): CSP, import fuzz tests, licence + OSV
+  `security.yml`, completed Evidence Register (40 entries) + structured mirror,
+  README hardening/testing/deploy/screenshots/status sections, per-route
+  screenshot capture. All four workflows green; `audit-ci` clean; licence
+  allowlist clean.
+- **All eight milestones delivered** M1–M8, each tagged `v0.X.0-mX`, history
+  preserved. The M2 vertical slice (Family Office CIO cross-border payment +
+  USDC transfer) exercises wizard → holdings → transaction → route → Travel
+  Rule → diagram → graph → timeline → audit end-to-end and is E2E-covered on
+  Chromium + WebKit with a determinism replay.
+- **Known deferred work** (carried into the Section 46 enhancement phase):
+  seeded-probabilistic screening (currently rule-based); editable per-persona
+  entitlement/limit overrides in the wizard; richer mobile drill-down;
+  committed static screenshots; live NVDA/VoiceOver verification.

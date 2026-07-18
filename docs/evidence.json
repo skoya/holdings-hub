@@ -1,0 +1,287 @@
+{
+  "title": "Holdings Hub Prototype — Evidence Register",
+  "note": "Real-world references supporting simulated concepts (PLAN Section 27). Meridian Bank is fictional; real institutions appear as citations only.",
+  "count": 40,
+  "entries": [
+    {
+      "id": 1,
+      "claim": "Travel Rule data-exchange requirements for VASPs underpin the simulated Travel Rule packet",
+      "source": "FATF Recommendation 16 / Updated Guidance for a Risk-Based Approach to VAs and VASPs",
+      "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/Guidance-rba-virtual-assets-2021.html",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 2,
+      "claim": "EU regulatory regime for crypto-assets and stablecoins (CASP licensing, e-money tokens)",
+      "source": "Regulation (EU) 2023/1114 (MiCA)",
+      "url": "https://eur-lex.europa.eu/eli/reg/2023/1114/oj",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 3,
+      "claim": "Banks exploring tokenised cross-border settlement on unified ledgers",
+      "source": "BIS Project Agorá",
+      "url": "https://www.bis.org/about/bisih/topics/fmis/agora.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 4,
+      "claim": "Regulated asset tokenisation pilots across asset classes",
+      "source": "MAS Project Guardian",
+      "url": "https://www.mas.gov.sg/schemes-and-initiatives/project-guardian",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 5,
+      "claim": "Large bank running production blockchain payments/tokenisation platform",
+      "source": "J.P. Morgan Kinexys (formerly Onyx)",
+      "url": "https://www.jpmorgan.com/kinexys",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 6,
+      "claim": "Tokenised money market fund with on-chain shares",
+      "source": "BlackRock BUIDL (BlackRock USD Institutional Digital Liquidity Fund)",
+      "url": "https://securitize.io/buidl",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 7,
+      "claim": "Tokenised MMF registered as transfer-agent ledger on public chains",
+      "source": "Franklin Templeton OnChain U.S. Government Money Fund (BENJI)",
+      "url": "https://www.franklintempleton.com/investments/options/money-market-funds/products/29386/SINGLCLASS/franklin-on-chain-u-s-government-money-fund/FOBXX",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 8,
+      "claim": "Regulated digital-asset exchange and CSD infrastructure operated by a bank group",
+      "source": "SIX Digital Exchange (SDX)",
+      "url": "https://www.sdx.com",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 9,
+      "claim": "Fiat-referenced stablecoin with monthly reserve attestations",
+      "source": "Circle USDC reserve attestations",
+      "url": "https://www.circle.com/en/transparency",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 10,
+      "claim": "Euro-denominated e-money token issued under EU rules",
+      "source": "Circle EURC",
+      "url": "https://www.circle.com/en/eurc",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 11,
+      "claim": "Wholesale settlement in tokenised central-bank-money-backed instrument",
+      "source": "Fnality International",
+      "url": "https://www.fnality.org",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 12,
+      "claim": "Multi-bank shared-ledger FX/payments settlement network",
+      "source": "Partior",
+      "url": "https://www.partior.com",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 13,
+      "claim": "Concept of regulated tokenised liabilities across institutions",
+      "source": "Regulated Liability Network (RLN) UK/US experiments",
+      "url": "https://regulatedliabilitynetwork.org",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 14,
+      "claim": "Distributed ledger repo settlement at scale in production",
+      "source": "Broadridge Distributed Ledger Repo (DLR)",
+      "url": "https://www.broadridge.com/press-release/2021/broadridge-launches-dlt-repo-platform",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 15,
+      "claim": "Collateral mobility via tokenised securities lending",
+      "source": "HQLAᵡ",
+      "url": "https://www.hqla-x.com",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 16,
+      "claim": "Prudential treatment of banks' cryptoasset exposures",
+      "source": "Basel Committee SCO60 (cryptoasset standard)",
+      "url": "https://www.bis.org/basel_framework/chapter/SCO/60.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 17,
+      "claim": "UK regime for cryptoasset registration and financial promotions",
+      "source": "FCA cryptoasset registration & promotions rules",
+      "url": "https://www.fca.org.uk/firms/cryptoassets",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 18,
+      "claim": "International standards for stablecoin arrangements as FMIs",
+      "source": "CPMI-IOSCO guidance on stablecoin arrangements",
+      "url": "https://www.bis.org/cpmi/publ/d198.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 19,
+      "claim": "Wholesale CBDC settlement trials with commercial banks",
+      "source": "BIS/SNB Project Helvetia",
+      "url": "https://www.bis.org/publ/othp35.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 20,
+      "claim": "Cross-border multi-CBDC platform experiments",
+      "source": "Project mBridge (BIS Innovation Hub)",
+      "url": "https://www.bis.org/about/bisih/topics/cbdc/mcbdc_bridge.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 21,
+      "claim": "Structured financial messaging standard used for payment simulation fields",
+      "source": "ISO 20022",
+      "url": "https://www.iso20022.org",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 22,
+      "claim": "Interlinking existing rails with tokenised/CBDC networks",
+      "source": "Swift CBDC sandbox/connector experiments",
+      "url": "https://www.swift.com/news-events/news/swift-cbdc-sandbox-project",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 23,
+      "claim": "Bank-issued tokenised deposits for corporate treasury payments",
+      "source": "J.P. Morgan JPM Coin / deposit token work",
+      "url": "https://www.jpmorgan.com/kinexys/digital-payments",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 24,
+      "claim": "Continuous 24/7 settlement contrast vs T+1 securities settlement cycles",
+      "source": "US move to T+1 settlement (SEC rule)",
+      "url": "https://www.sec.gov/rules/final/2023/34-96930.pdf",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 25,
+      "claim": "Segregation of duties / four-eyes authorisation as a core bank internal control",
+      "source": "BCBS — Framework for Internal Control Systems in Banking Organisations",
+      "url": "https://www.bis.org/publ/bcbs40.htm",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 26,
+      "claim": "Sanctions/name screening expectations for financial institutions",
+      "source": "Wolfsberg Group — Guidance on Sanctions Screening",
+      "url": "https://www.wolfsberg-principles.com/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 27,
+      "claim": "Travel Rule extended to crypto-asset transfers (originator/beneficiary data)",
+      "source": "Regulation (EU) 2023/1113 — Transfer of Funds Regulation (recast)",
+      "url": "https://eur-lex.europa.eu/eli/reg/2023/1113/oj",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 28,
+      "claim": "DeFi / unhosted-wallet risk framing supporting the outside-custody-perimeter treatment",
+      "source": "FATF — Targeted Update on Implementation of the FATF Standards on VAs/VASPs (2023)",
+      "url": "https://www.fatf-gafi.org/en/publications/Fatfrecommendations/targeted-update-virtual-assets-vasps-2023.html",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 29,
+      "claim": "Locale-aware number/date/currency formatting via a standard browser API",
+      "source": "ECMAScript Internationalization API (ECMA-402) / MDN Intl",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 30,
+      "claim": "Free read-only reference crypto prices for the optional live-price overlay",
+      "source": "CoinGecko public API documentation",
+      "url": "https://www.coingecko.com/en/api/documentation",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 31,
+      "claim": "Currency cut-off / settlement-calendar differences between rails (SWIFT vs 24/7)",
+      "source": "SWIFT gpi payment tracking & cut-off documentation",
+      "url": "https://www.swift.com/our-solutions/swift-gpi",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 32,
+      "claim": "Browser IndexedDB as the capacity-appropriate store for the Simulation Library",
+      "source": "W3C Indexed Database API (IndexedDB)",
+      "url": "https://www.w3.org/TR/IndexedDB/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 33,
+      "claim": "Portable session bundles (ZIP) for export/import round-trips",
+      "source": "PKWARE .ZIP File Format Specification",
+      "url": "https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 34,
+      "claim": "WCAG 2.1 AA is the accessibility conformance target for the prototype",
+      "source": "W3C — Web Content Accessibility Guidelines 2.1",
+      "url": "https://www.w3.org/TR/WCAG21/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 35,
+      "claim": "ARIA roles/states used for dialog, nav landmarks and the diagram grouping",
+      "source": "W3C — WAI-ARIA 1.2 / ARIA Authoring Practices",
+      "url": "https://www.w3.org/TR/wai-aria-1.2/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 36,
+      "claim": "Automated accessibility assertions (axe-core rules) as the CI backstop",
+      "source": "Deque axe-core rule descriptions",
+      "url": "https://dequeuniversity.com/rules/axe/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 37,
+      "claim": "Content Security Policy directives constraining script/style/connect origins",
+      "source": "MDN — Content-Security-Policy",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 38,
+      "claim": "Prototype-pollution and injection defences on the untrusted import boundary",
+      "source": "OWASP — Prototype Pollution Prevention Cheat Sheet",
+      "url": "https://cheatsheetseries.owasp.org/cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.html",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 39,
+      "claim": "Open-source vulnerability scanning of the dependency lockfile",
+      "source": "Google OSV (Open Source Vulnerabilities) / OSV-Scanner",
+      "url": "https://osv.dev/",
+      "checked": "2026-07-18"
+    },
+    {
+      "id": 40,
+      "claim": "Baseline application security verification requirements",
+      "source": "OWASP Application Security Verification Standard (ASVS)",
+      "url": "https://owasp.org/www-project-application-security-verification-standard/",
+      "checked": "2026-07-18"
+    }
+  ]
+}
