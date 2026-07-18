@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "packageManager": "pnpm@9.15.9",
-  "description": "Holdings Hub Prototype \u2014 fictional GSIB-neutral digital asset simulation SPA (Meridian Bank). Simulation only \u2014 no real transactions or investment advice.",
+  "description": "Holdings Hub Prototype — fictional GSIB-neutral digital asset simulation SPA (Meridian Bank). Simulation only — no real transactions or investment advice.",
   "engines": {
     "node": ">=20"
   },
@@ -25,21 +25,26 @@
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",
+    "@xyflow/react": "^12.8.0",
+    "d3-force": "^3.0.0",
+    "i18next": "^26.3.6",
     "localforage": "^1.10.0",
     "pure-rand": "^6.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-i18next": "^17.0.10",
     "react-router-dom": "^6.30.0",
     "zod": "^3.24.1",
-    "zustand": "^4.5.5",
-    "@xyflow/react": "^12.8.0",
-    "d3-force": "^3.0.0"
+    "zustand": "^4.5.5"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
     "@eslint/js": "^9.17.0",
+    "@playwright/test": "^1.54.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^14.3.1",
     "@testing-library/user-event": "^14.5.2",
+    "@types/d3-force": "^3.0.10",
     "@types/node": "^20",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
@@ -57,9 +62,6 @@
     "typescript": "~5.6.3",
     "typescript-eslint": "^8.18.2",
     "vite": "^7.3.6",
-    "vitest": "^4.1.10",
-    "@types/d3-force": "^3.0.10",
-    "@playwright/test": "^1.54.0",
-    "@axe-core/playwright": "^4.10.2"
+    "vitest": "^4.1.10"
   }
 }
