@@ -1,4 +1,26 @@
-import type { Persona, PolicyDecision, SimulationSession, Transaction } from '@/schemas';
+import type {
+  Persona,
+  PolicyDecision,
+  Relationship,
+  SimulationSession,
+  Transaction,
+} from '@/schemas';
+
+/**
+ * The Meridian relationship that governs a given transaction type. Entitlement
+ * and approval checks are evaluated against this relationship, so it must match
+ * the relationship the initiating/approving persona actually holds.
+ */
+export function relationshipForType(type: Transaction['type']): Relationship {
+  switch (type) {
+    case 'stablecoin-transfer':
+      return 'wallet-services';
+    case 'dsvp-settlement':
+      return 'tokenisation-agent';
+    default:
+      return 'payments';
+  }
+}
 
 export function evaluateTransaction(
   session: SimulationSession,
@@ -7,9 +29,7 @@ export function evaluateTransaction(
 ): PolicyDecision[] {
   const decisions: PolicyDecision[] = [];
   const grant = actor.grants.find(
-    (item) =>
-      item.relationship ===
-      (transaction.type === 'stablecoin-transfer' ? 'wallet-services' : 'payments'),
+    (item) => item.relationship === relationshipForType(transaction.type),
   );
 
   if (!grant || grant.level === 'view') {

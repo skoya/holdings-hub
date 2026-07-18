@@ -6,7 +6,7 @@ import { addMinutes } from '@/engine/calendar';
 import { assertTransition, latencyMinutes } from '@/engine/lifecycle';
 import { buildRouteComparison } from '@/engine/routing';
 import { runScreening } from '@/engine/screening';
-import { evaluateTransaction, hasBlockingDecision } from '@/engine/policy';
+import { evaluateTransaction, hasBlockingDecision, relationshipForType } from '@/engine/policy';
 import { buildTravelRulePacket } from '@/engine/travelRule';
 import { convert } from '@/engine/fx';
 import { assetById, personaTemplate, scenarioPreset } from '@/config/catalog';
@@ -533,7 +533,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
         if (requiresFourEyes && tx.initiatedByPersonaId === actor.id) {
           throw new Error('Four-eyes control: the initiator cannot approve this transaction');
         }
-        const relationship = tx.type === 'stablecoin-transfer' ? 'wallet-services' : 'payments';
+        const relationship = relationshipForType(tx.type);
         const canApprove = actor.grants.some(
           (grant) =>
             grant.relationship === relationship && ['approve', 'admin'].includes(grant.level),

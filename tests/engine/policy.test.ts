@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { evaluateTransaction, hasBlockingDecision } from '@/engine/policy';
+import { evaluateTransaction, hasBlockingDecision, relationshipForType } from '@/engine/policy';
 import { makeSession } from '../fixtures/session';
 
 function transaction(session: ReturnType<typeof makeSession>) {
@@ -108,6 +108,29 @@ describe('policy engine', () => {
     );
     expect(decisions.find((item) => item.ruleId === 'ENT-001')?.outcome).toBe('pass');
     expect(hasBlockingDecision(decisions)).toBe(false);
+  });
+
+  it('maps transaction types to the governing relationship', () => {
+    expect(relationshipForType('dsvp-settlement')).toBe('tokenisation-agent');
+    expect(relationshipForType('stablecoin-transfer')).toBe('wallet-services');
+    expect(relationshipForType('cross-border-payment')).toBe('payments');
+    const session = makeSession();
+    const actor = {
+      ...session.personas[0]!,
+      grants: [
+        {
+          relationship: 'tokenisation-agent' as const,
+          assetClass: 'tokenised' as const,
+          level: 'initiate' as const,
+        },
+      ],
+    };
+    const decisions = evaluateTransaction(
+      session,
+      { ...transaction(session), type: 'dsvp-settlement' as const, amount: 1_000_000 },
+      actor,
+    );
+    expect(decisions.find((item) => item.ruleId === 'ENT-001')?.outcome).toBe('pass');
   });
 
   it('does not block when a persona has no explicit limits', () => {
