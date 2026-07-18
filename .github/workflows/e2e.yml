@@ -20,7 +20,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps ${{ matrix.project }}
       - run: pnpm run build
-      - run: pnpm run e2e -- --project=${{ matrix.project }}
+      - run: pnpm run e2e --project=${{ matrix.project }}
         env:
           CI: 'true'
       - uses: actions/upload-artifact@v4
