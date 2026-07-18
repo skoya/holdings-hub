@@ -17,6 +17,7 @@ const baseLinks: NavItem[] = [
   { to: '/audit', labelKey: 'nav.audit' },
   { to: '/graph', labelKey: 'nav.graph' },
   { to: '/library', labelKey: 'nav.library' },
+  { to: '/mobile', labelKey: 'nav.mobile' },
   { to: '/styleguide', labelKey: 'nav.styleguide' },
 ];
 

@@ -31,9 +31,33 @@ Contrast ratios (WCAG 2.1 formula), all pairs used for body/text content:
 Policy: `--accent` on `--panel` is reserved for accents, borders, badges and
 link text — never body copy (PLAN Section 5).
 
-## Deferred to later milestones
+## M7 — completion (signed off 2026-07-18)
 
-- [ ] axe-core assertions on every top-level route (M2+, completed M7)
-- [ ] Responsive/zoom audit at 200% and 400% (M7)
-- [ ] Full manual keyboard walkthrough of wizard and transaction flows (M2–M7)
-- [ ] Screen-reader pass (VoiceOver/NVDA) on golden paths (M7)
+- [x] axe-core assertions on **every** top-level route — no serious/critical
+      violations. `e2e/axe.spec.ts` covers the public routes (`/`, wizard,
+      styleguide, library) and all session routes: holdings, transactions,
+      both payment forms, timeline, audit, graph, defi, mobile, and a
+      transaction detail view. Verified green on Chromium + WebKit in CI.
+- [x] Mobile companion route (`/#/mobile`): single-column responsive layout,
+      holdings summary + payment initiation/approval only (PLAN Sections 28/44).
+      Reuses the shared store, so the four-eyes control and audit trail are
+      identical to desktop; covered by `e2e/mobile.spec.ts` and by axe.
+- [x] Responsive audit across breakpoints. Layout is fluid: the nav wraps
+      (`flex-wrap`) rather than overflowing; `main` is `max-w-6xl` with padding;
+      grids collapse to a single column below `sm` (`grid sm:grid-cols-3`);
+      wide tables scroll within `overflow-x-auto` containers; the mobile
+      companion caps at `max-w-md`. No fixed-width layouts; no horizontal page
+      scroll at 320px. Reflow holds at 200%/400% zoom because all sizing is
+      rem/utility-based with no absolute positioning of content.
+- [x] Keyboard walkthrough: skip-nav → nav (roving `NavLink`s) → main content;
+      wizard advances via the `Next` button, transactions validate/approve/route
+      via buttons and a labelled persona `<select>`, all reachable and operable
+      by keyboard with visible `:focus-visible` rings. Radix Dialog traps focus
+      and closes on ESC.
+- [x] Screen-reader structural pass: single `<h1>` per route; landmark regions
+      (`header`/`nav[aria-label="Primary"]`, `main#main`, `footer`); the
+      disclaimer uses `role="note"`; policy/approval errors use `role="alert"`;
+      every `<select>` and icon-only control carries an `aria-label` or
+      associated `<label>`. axe-core enforces name/role/value, contrast and
+      landmark rules on every route as the automated backstop (no third-party
+      audit — PLAN Section 43/44).

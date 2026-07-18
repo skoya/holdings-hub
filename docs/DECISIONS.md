@@ -123,3 +123,60 @@ code delta was `defineConfig` now importing from 'vitest/config'.
   entitlement/limit overrides in the wizard remain deferred (templates only).
   Evidence Register expanded to 28 entries (+4: four-eyes/BCBS, sanctions
   screening/Wolfsberg, EU TFR crypto travel rule, FATF DeFi update).
+
+## 2026-07-18T06:20Z — M5/M6 reflections (logged retrospectively)
+
+These reflections were reconstructed from the shipped code and tags in build
+session 2; session 1 tagged `v0.5.0-m5` and `v0.6.0-m6` without appending them.
+
+- **M5 (`v0.5.0-m5`) — i18n + market data/calendar.** `i18next` +
+  `react-i18next` wired; `scripts/translate.mjs` generates de/fr/ja bundles;
+  `scripts/check-i18n-keys.mjs` enforces key parity in CI (missing/extra keys
+  fail the build). CoinGecko live-price toggle added as a display overlay only
+  with automatic deterministic fallback — sessions record which mode was active
+  so the determinism claim is never affected by live data. Jurisdiction
+  calendars drive routing settlement-date explanations. Gate: CI+E2E green incl.
+  `check:i18n`; E2E in a non-English locale and a live-mode fallback test.
+- **M6 (`v0.6.0-m6`) — Simulation Library + polish.** Full library UI
+  (duplicate/rename/delete, JSON and ZIP bundle export); migrations exercised
+  with a `v1` fixture; deep-link restoration (`#/open/:id`) with an import
+  prompt fallback; diagnostics panel expansion; performance pass — `jszip` is
+  dynamically imported so it code-splits out of the initial bundle. The M6
+  deep-link E2E was initially red because it read the session id from the
+  in-memory store, which is empty after a full reload; fixed to read from the
+  IndexedDB-backed library page instead.
+
+## 2026-07-18T06:25Z — M7 decisions (mobile companion + a11y completion)
+
+- **Mobile companion reuses the store, not a parallel data layer.** The
+  `/#/mobile` route (`src/features/mobile/MobilePage.tsx`) is a simplified
+  single-column view scoped to a holdings summary plus payment
+  initiation/approval only (PLAN Sections 28/44). It calls the same
+  `useSessionStore` mutations (`switchPersona`, `approveTransaction`) as the
+  desktop detail view, so the four-eyes control, audit events and determinism
+  are identical — the companion is a view, not a second engine. Full mobile
+  spec beyond this scope remains intentionally deferred (Section 44.2).
+- **Full axe coverage as the accessibility gate.** `e2e/axe.spec.ts` now asserts
+  zero serious/critical violations on every top-level route — public routes plus
+  holdings, both payment forms, transactions, timeline, audit, graph, defi,
+  mobile, and a transaction detail view. This is the automated backstop behind
+  the manual `docs/A11Y-CHECKLIST.md` sign-off (no third-party audit, Section
+  43/44).
+- **Initiate actions are styled links, not `Button asChild`.** The design-system
+  `Button` is a plain `<button>` with no Radix `Slot`/`asChild` support, so the
+  companion's "New payment"/"New USDC" actions are `<Link>`s carrying the same
+  button utility classes rather than nesting an anchor inside a button (which
+  would be invalid and an axe violation).
+
+### M7 reflection
+
+- **Shipped** (targeting `v0.7.0-m7`): mobile companion route; full axe coverage
+  on all routes; `A11Y-CHECKLIST.md` M7 sign-off (responsive/zoom, keyboard,
+  screen-reader structural pass). `nav.mobile` added across en/de/fr/ja (key
+  parity holds). New `e2e/mobile.spec.ts` drives the companion's summary +
+  four-eyes approval end-to-end.
+- **Known issues / deferred**: the companion is deliberately feature-limited
+  (summary + payments); rich mobile holdings drill-down and diagram views stay
+  out of scope. Screen-reader verification is a structural/axe-enforced pass,
+  not a live NVDA/VoiceOver run (no assistive-tech hardware in the build
+  environment) — documented as such in the checklist.
