@@ -11,9 +11,7 @@ export function Chip({ selected = false, className = '', type = 'button', ...res
       type={type}
       aria-pressed={selected}
       className={`inline-flex items-center rounded-full border px-3 py-1 text-sm transition-colors ${
-        selected
-          ? 'border-dark bg-dark text-white'
-          : 'border-line bg-panel text-ink hover:bg-bg'
+        selected ? 'border-dark bg-dark text-white' : 'border-line bg-panel text-ink hover:bg-bg'
       } ${className}`}
       {...rest}
     />

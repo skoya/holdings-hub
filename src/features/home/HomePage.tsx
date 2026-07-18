@@ -50,7 +50,10 @@ export function HomePage() {
           <li>Core data schemas with runtime validation — live</li>
           <li>Browser-local session persistence with migrations — live</li>
           <li>
-            Design system — see the <a href="#/styleguide" className="text-accent underline">styleguide</a>
+            Design system — see the{' '}
+            <a href="#/styleguide" className="text-accent underline">
+              styleguide
+            </a>
           </li>
         </ul>
       </Card>

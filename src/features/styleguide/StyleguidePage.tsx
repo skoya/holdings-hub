@@ -89,8 +89,8 @@ export function StyleguidePage() {
           description="Focus is trapped, ESC closes, and ARIA attributes are handled by Radix."
         >
           <p className="text-sm">
-            Modal content goes here. This primitive will host transaction confirmations and
-            approval flows from Milestone 2.
+            Modal content goes here. This primitive will host transaction confirmations and approval
+            flows from Milestone 2.
           </p>
         </Dialog>
       </Card>

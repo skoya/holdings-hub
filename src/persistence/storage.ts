@@ -1,9 +1,5 @@
 import localforage from 'localforage';
-import {
-  SCHEMA_VERSION,
-  SimulationSessionSchema,
-  type SimulationSession,
-} from '@/schemas';
+import { SCHEMA_VERSION, SimulationSessionSchema, type SimulationSession } from '@/schemas';
 import { runMigrations } from '@/schemas/migrations';
 
 /**

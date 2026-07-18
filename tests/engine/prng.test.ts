@@ -94,9 +94,7 @@ describe('deterministic engine (PLAN Section 23)', () => {
     const actual = Array.from({ length: 25 }, () => restored.fork('market').next());
     expect(actual).toEqual(expected);
 
-    expect(restored.nextInt(0, 1_000_000)).toEqual(
-      Engine.restore(state).nextInt(0, 1_000_000),
-    );
+    expect(restored.nextInt(0, 1_000_000)).toEqual(Engine.restore(state).nextInt(0, 1_000_000));
   });
 
   it('serialized state is plain JSON and survives stringify/parse', () => {
