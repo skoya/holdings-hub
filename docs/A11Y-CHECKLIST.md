@@ -17,16 +17,16 @@ Playwright from M2. Status keys: [x] done, [ ] pending, [~] partial.
 
 Contrast ratios (WCAG 2.1 formula), all pairs used for body/text content:
 
-| Foreground | Background | Ratio | AA (normal text) |
-| --- | --- | --- | --- |
-| `--ink` #16181d | `--panel` #ffffff | 17.9:1 | pass |
-| `--ink` #16181d | `--bg` #f4f5f7 | 16.5:1 | pass |
-| `--ink-soft` #5a6270 | `--panel` #ffffff | 5.7:1 | pass |
-| `--ink-soft` #5a6270 | `--bg` #f4f5f7 | 5.3:1 | pass |
-| #ffffff | `--dark` #171a21 | 17.0:1 | pass |
-| #ffffff | `--dark-2` #20242e | 14.5:1 | pass |
-| `--banner-ink` #231a02 | `--banner` #f0b429 | 9.4:1 | pass |
-| `--accent` #d81f2a | `--panel` #ffffff | 4.9:1 | pass (used for accents/links, not body text) |
+| Foreground             | Background         | Ratio  | AA (normal text)                             |
+| ---------------------- | ------------------ | ------ | -------------------------------------------- |
+| `--ink` #16181d        | `--panel` #ffffff  | 17.9:1 | pass                                         |
+| `--ink` #16181d        | `--bg` #f4f5f7     | 16.5:1 | pass                                         |
+| `--ink-soft` #5a6270   | `--panel` #ffffff  | 5.7:1  | pass                                         |
+| `--ink-soft` #5a6270   | `--bg` #f4f5f7     | 5.3:1  | pass                                         |
+| #ffffff                | `--dark` #171a21   | 17.0:1 | pass                                         |
+| #ffffff                | `--dark-2` #20242e | 14.5:1 | pass                                         |
+| `--banner-ink` #231a02 | `--banner` #f0b429 | 9.4:1  | pass                                         |
+| `--accent` #d81f2a     | `--panel` #ffffff  | 4.9:1  | pass (used for accents/links, not body text) |
 
 Policy: `--accent` on `--panel` is reserved for accents, borders, badges and
 link text — never body copy (PLAN Section 5).
