@@ -16,6 +16,7 @@ interface WizardDraft {
   relationships: Relationship[];
   personaDisplayName: string;
   seed: number;
+  defiEnabled: boolean;
   update: (partial: Partial<Omit<WizardDraft, 'update' | 'reset' | 'applyPreset'>>) => void;
   applyPreset: (presetId: string) => void;
   reset: () => void;
@@ -33,6 +34,7 @@ function fromPreset(presetId: string) {
     relationships: [...entity.relationships],
     personaDisplayName: persona.defaultDisplayName,
     seed: preset.defaultSeed,
+    defiEnabled: false,
   };
 }
 

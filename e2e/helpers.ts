@@ -19,7 +19,19 @@ export async function runPaymentToSettled(page: Page, route: 'stablecoin' | 'swi
   await page.getByTestId('create-payment').click();
   await page.waitForURL(/#\/transactions\/tx-/);
   await page.getByTestId('btn-validate').click();
-  await page.getByTestId('btn-approve').click();
+  // Four-eyes control (PLAN Section 12): a payment above the materiality
+  // threshold is signed off by an independent approver, not the initiator.
+  await approveAsSecondPersona(page);
   await page.getByTestId(`btn-route-${route}`).click();
   await page.getByTestId('btn-settle').click();
+}
+
+/**
+ * Approve a pending transaction as the independent control signatory (persona
+ * index 1), satisfying the four-eyes rule. Safe for below-threshold
+ * transactions too — the signatory can always approve.
+ */
+export async function approveAsSecondPersona(page: Page) {
+  await page.getByTestId('approval-persona').selectOption({ index: 1 });
+  await page.getByTestId('btn-approve').click();
 }

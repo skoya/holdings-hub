@@ -13,6 +13,15 @@ const WIZARD: WizardInput = {
   seed: 20260105,
 };
 
+/** Four-eyes approval (PLAN Section 12): approve as the independent signatory. */
+function approveWithSignatory(txId: string): void {
+  const signatory = useSessionStore
+    .getState()
+    .session!.personas.find((p) => p.role === 'authorised-signatory')!;
+  useSessionStore.getState().switchPersona(signatory.id);
+  useSessionStore.getState().approveTransaction(txId);
+}
+
 /** Scripted golden path: payment end-to-end plus a USDC transfer. */
 function runScript(): string {
   const store = useSessionStore.getState();
@@ -27,7 +36,7 @@ function runScript(): string {
   });
   const s = useSessionStore.getState();
   s.validateTransaction(txId);
-  s.approveTransaction(txId);
+  approveWithSignatory(txId);
   s.selectRoute(txId, 'route-stablecoin');
   s.runSettlement(txId);
   const usdcId = s.createUsdcTransfer({
@@ -64,7 +73,7 @@ describe('vertical slice integration (PLAN Section 40 M2)', () => {
     });
     const api = useSessionStore.getState();
     api.validateTransaction(txId);
-    api.approveTransaction(txId);
+    approveWithSignatory(txId);
     api.selectRoute(txId, 'route-swift');
     api.runSettlement(txId);
 

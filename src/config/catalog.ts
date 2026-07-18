@@ -176,6 +176,45 @@ export function assetById(id: string): Asset {
 }
 
 // ---------------------------------------------------------------------------
+// DeFi protocol risk labels (PLAN Section 13) — config-driven, keyed by the
+// asset's `metadata.defi` kind. Displayed by the opt-in DeFi module alongside
+// the "outside Meridian custody perimeter" banner. Simulation only.
+// ---------------------------------------------------------------------------
+
+export type RiskLevel = 'low' | 'medium' | 'high';
+
+export interface DefiRiskProfile {
+  protocol: string;
+  perimeter: string;
+  risks: ReadonlyArray<{ label: string; level: RiskLevel }>;
+}
+
+export const DEFI_RISK_LABELS: Record<string, DefiRiskProfile> = {
+  staking: {
+    protocol: 'Simulated liquid-staking protocol',
+    perimeter: 'Outside Meridian custody — validator/protocol controlled',
+    risks: [
+      { label: 'Smart-contract risk', level: 'high' },
+      { label: 'Slashing / validator risk', level: 'medium' },
+      { label: 'Withdrawal / unbonding delay', level: 'medium' },
+    ],
+  },
+  'liquidity-pool': {
+    protocol: 'Simulated AMM liquidity pool',
+    perimeter: 'Outside Meridian custody — pool contract controlled',
+    risks: [
+      { label: 'Impermanent loss', level: 'high' },
+      { label: 'Smart-contract risk', level: 'high' },
+      { label: 'Oracle / price manipulation', level: 'medium' },
+    ],
+  },
+};
+
+export function defiRiskProfile(defiKind: string | undefined): DefiRiskProfile | undefined {
+  return defiKind ? DEFI_RISK_LABELS[defiKind] : undefined;
+}
+
+// ---------------------------------------------------------------------------
 // Entity templates (PLAN Section 6)
 // ---------------------------------------------------------------------------
 

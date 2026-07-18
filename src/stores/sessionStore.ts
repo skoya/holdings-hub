@@ -6,6 +6,7 @@ import { addMinutes } from '@/engine/calendar';
 import { assertTransition, latencyMinutes } from '@/engine/lifecycle';
 import { buildRouteComparison } from '@/engine/routing';
 import { runScreening } from '@/engine/screening';
+import { evaluateTransaction, hasBlockingDecision, relationshipForType } from '@/engine/policy';
 import { buildTravelRulePacket } from '@/engine/travelRule';
 import { convert } from '@/engine/fx';
 import { assetById, personaTemplate, scenarioPreset } from '@/config/catalog';
@@ -35,6 +36,8 @@ export interface WizardInput {
   relationships: SimulationSession['entities'][number]['relationships'];
   personaDisplayName: string;
   seed: number;
+  /** Opt-in DeFi module (PLAN Section 13). Off by default. */
+  defiEnabled?: boolean;
 }
 
 export interface PaymentInput {
@@ -67,6 +70,7 @@ interface SessionStore {
   createUsdcTransfer: (input: UsdcTransferInput) => string;
   validateTransaction: (txId: string) => void;
   approveTransaction: (txId: string) => void;
+  switchPersona: (personaId: string) => void;
   selectRoute: (txId: string, routeId: string) => void;
   runSettlement: (txId: string) => void;
 }
@@ -207,6 +211,50 @@ export const useSessionStore = create<SessionStore>((set, get) => {
         };
       });
 
+      // DeFi opt-in module (Section 13): simulated positions sit OUTSIDE the
+      // Meridian custody perimeter. Only materialised when the wizard opt-in is
+      // on, so default sessions are unchanged (holdings === portfolio length).
+      const defiHoldings = input.defiEnabled
+        ? (
+            [
+              ['asset-staked-eth', 340_000],
+              ['asset-lp-share', 180_000],
+            ] as const
+          ).map(([assetRef, quantity]) => {
+            const asset = assetById(assetRef);
+            const valueInGbp = convert(market, quantity, asset.currency, 'GBP');
+            return {
+              id: nextId(engine, 'hld'),
+              assetRef,
+              quantity,
+              valuation: {
+                value: Math.round(valueInGbp * 100) / 100,
+                currency: 'GBP',
+                asOf: SIM_EPOCH,
+                mode: 'deterministic' as const,
+              },
+              custodyLocation: 'on-chain' as const,
+              ...(asset.network ? { network: asset.network } : {}),
+              encumbrance: 'free' as const,
+              authoritativeSource: 'external' as const,
+            };
+          })
+        : [];
+
+      // DeFi visibility is entitlement-gated: grant the primary persona a defi
+      // view entitlement only when opted in. The control signatory is left
+      // without it, so switching personas demonstrates the gate.
+      const primaryGrants = input.defiEnabled
+        ? [
+            ...persona.grants,
+            {
+              relationship: 'wallet-services' as const,
+              assetClass: 'defi' as const,
+              level: 'view' as const,
+            },
+          ]
+        : persona.grants;
+
       let session: SimulationSession = SimulationSessionSchema.parse({
         id: nextId(engine, 'session'),
         name: input.sessionName,
@@ -231,12 +279,25 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             entityId,
             role: preset.personaRole,
             displayName: input.personaDisplayName,
-            grants: persona.grants,
+            grants: primaryGrants,
             ...(persona.limits ? { limits: persona.limits } : {}),
+          },
+          {
+            id: nextId(engine, 'per'),
+            entityId,
+            role: 'authorised-signatory',
+            displayName: 'Meridian Control Signatory',
+            grants: [
+              { relationship: 'payments', assetClass: 'cash', level: 'approve' },
+              { relationship: 'wallet-services', assetClass: 'stablecoin', level: 'approve' },
+              { relationship: 'tokenisation-agent', assetClass: 'tokenised', level: 'approve' },
+            ],
+            limits: { perTransaction: 10_000_000, daily: 25_000_000, currency: 'GBP' },
           },
         ],
         activePersonaId: personaId,
-        holdings,
+        settings: { defiEnabled: input.defiEnabled ?? false },
+        holdings: [...holdings, ...defiHoldings],
         transactions: [],
         auditLog: [],
       });
@@ -253,6 +314,20 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     },
 
     clearSession: () => set({ session: null, engine: null, lastError: null }),
+
+    switchPersona: (personaId) => {
+      mutate((session, engine) => {
+        if (!session.personas.some((persona) => persona.id === personaId)) {
+          throw new Error(`Unknown persona ${personaId}`);
+        }
+        return withAudit(
+          { ...session, activePersonaId: personaId },
+          engine,
+          'persona.activated',
+          `persona:${personaId}`,
+        );
+      });
+    },
 
     exportSessionJson: () => {
       const { session, engine } = get();
@@ -292,6 +367,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'cross-border-payment',
@@ -300,6 +376,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             crossCurrency: true,
           }),
           reference: nextReference(engine),
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {
             ...(overLimit ? { limitWarning: 'Amount exceeds per-transaction limit' } : {}),
             targetCurrency: 'CHF',
@@ -335,6 +412,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'stablecoin-transfer',
@@ -351,6 +429,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             ts,
           }),
           reference: nextReference(engine),
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {},
         };
         const next = { ...session, transactions: [...session.transactions, tx] };
@@ -391,6 +470,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           createdAt: ts,
           updatedAt: ts,
           events: [{ state: 'draft', ts }],
+          policyDecisions: [],
           route: buildRouteComparison({
             routingStream: engine.fork('routing'),
             type: 'dsvp-settlement',
@@ -399,6 +479,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             crossCurrency: false,
           }),
           reference: nextReference(engine),
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {
             deliveryLeg: 'asset-tokenised-bond +1,000,000 USD face (from counterparty)',
             paymentLeg: 'asset-tokenised-deposit -1,000,000 USD (to counterparty)',
@@ -421,10 +502,22 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       mutate((session, engine) => {
         const tx = getTx(session, txId);
         const persona = session.personas.find((p) => p.id === session.activePersonaId);
-        if (persona?.limits && tx.amount > persona.limits.perTransaction) {
-          return transition(session, engine, txId, 'failed', 'Per-transaction limit breached');
+        if (!persona) throw new Error('Active persona not found');
+        const policyDecisions = evaluateTransaction(session, tx, persona);
+        let policySession = updateTx(session, txId, (item) => ({ ...item, policyDecisions }));
+        for (const decision of policyDecisions) {
+          policySession = withAudit(
+            policySession,
+            engine,
+            `policy.${decision.outcome}`,
+            `tx:${txId}`,
+            `${decision.ruleId}: ${decision.explanation}`,
+          );
         }
-        let s = transition(session, engine, txId, 'validated');
+        if (hasBlockingDecision(policyDecisions)) {
+          return transition(policySession, engine, txId, 'failed', 'Blocked by policy decision');
+        }
+        let s = transition(policySession, engine, txId, 'validated');
         const screening = runScreening(tx.beneficiary, s.clock.currentTs);
         s = updateTx(s, txId, (t) => ({ ...t, screening }));
         s = withAudit(s, engine, `screening.${screening.outcome}`, `tx:${txId}`, screening.note);
@@ -436,15 +529,28 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     },
 
     approveTransaction: (txId) => {
-      mutate((session, engine) =>
-        transition(
-          session,
-          engine,
-          txId,
-          'approved',
-          'Single-approver flow (four-eyes thresholds arrive in M4)',
-        ),
-      );
+      mutate((session, engine) => {
+        const tx = getTx(session, txId);
+        const actor = session.personas.find((persona) => persona.id === session.activePersonaId);
+        if (!actor) throw new Error('Active persona not found');
+        const requiresFourEyes = tx.policyDecisions.some(
+          (decision) => decision.ruleId === 'APP-001' && decision.outcome === 'require-approval',
+        );
+        if (requiresFourEyes && tx.initiatedByPersonaId === actor.id) {
+          throw new Error('Four-eyes control: the initiator cannot approve this transaction');
+        }
+        const relationship = relationshipForType(tx.type);
+        const canApprove = actor.grants.some(
+          (grant) =>
+            grant.relationship === relationship && ['approve', 'admin'].includes(grant.level),
+        );
+        if (!canApprove) throw new Error(`${actor.displayName} lacks approval entitlement`);
+        const approved = updateTx(session, txId, (item) => ({
+          ...item,
+          approvedByPersonaId: actor.id,
+        }));
+        return transition(approved, engine, txId, 'approved', `Approved by ${actor.displayName}`);
+      });
     },
 
     selectRoute: (txId, routeId) => {

@@ -11,6 +11,7 @@ import { TransactionDetailPage } from '@/features/transactions/TransactionDetail
 import { TimelinePage } from '@/features/timeline/TimelinePage';
 import { AuditPage } from '@/features/audit/AuditPage';
 import { GraphPage } from '@/features/graph/GraphPage';
+import { DefiPage } from '@/features/defi/DefiPage';
 import { LibraryPage } from '@/features/library/LibraryPage';
 
 export function App() {
@@ -28,6 +29,7 @@ export function App() {
         <Route path="timeline" element={<TimelinePage />} />
         <Route path="audit" element={<AuditPage />} />
         <Route path="graph" element={<GraphPage />} />
+        <Route path="defi" element={<DefiPage />} />
         <Route path="library" element={<LibraryPage />} />
         <Route path="styleguide" element={<StyleguidePage />} />
         <Route

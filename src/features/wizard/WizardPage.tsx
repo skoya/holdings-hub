@@ -70,6 +70,7 @@ export function WizardPage() {
       relationships: draft.relationships,
       personaDisplayName: draft.personaDisplayName,
       seed: draft.seed,
+      defiEnabled: draft.defiEnabled,
     });
     navigate('/holdings');
   };
@@ -196,6 +197,22 @@ export function WizardPage() {
             value={draft.seed}
             onChange={(e) => draft.update({ seed: Number(e.target.value) })}
           />
+          <label className="mt-4 flex items-start gap-2 text-sm">
+            <input
+              type="checkbox"
+              className="mt-0.5"
+              checked={draft.defiEnabled}
+              onChange={(e) => draft.update({ defiEnabled: e.target.checked })}
+              data-testid="defi-optin"
+            />
+            <span>
+              <span className="font-medium">Enable DeFi module (opt-in)</span>
+              <span className="block text-xs text-ink-soft">
+                Adds simulated staking and liquidity-pool positions held outside the Meridian
+                custody perimeter (PLAN Section 13). Off by default; entitlement-gated.
+              </span>
+            </span>
+          </label>
         </Card>
       )}
 
@@ -221,6 +238,8 @@ export function WizardPage() {
             <dd>{draft.personaDisplayName}</dd>
             <dt className="text-ink-soft">Seed</dt>
             <dd>{draft.seed}</dd>
+            <dt className="text-ink-soft">DeFi module</dt>
+            <dd>{draft.defiEnabled ? 'Enabled (opt-in)' : 'Disabled'}</dd>
           </dl>
         </Card>
       )}

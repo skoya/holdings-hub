@@ -32,3 +32,12 @@ Real institutions appear here as citations only; the product UI is fictional
 | 24  | Continuous 24/7 settlement contrast vs T+1 securities settlement cycles                    | US move to T+1 settlement (SEC rule)                                                 | https://www.sec.gov/rules/final/2023/34-96930.pdf                                                                                                    | 2026-07-18 |
 
 Expansion policy: +3 or more entries per milestone, completed register by M8.
+
+## M4 additions — controls & compliance
+
+| #   | Claim supported                                                                        | Source                                                                             | URL                                                                                                          | Checked    |
+| --- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------- |
+| 25  | Segregation of duties / four-eyes authorisation as a core bank internal control        | BCBS — Framework for Internal Control Systems in Banking Organisations             | https://www.bis.org/publ/bcbs40.htm                                                                          | 2026-07-18 |
+| 26  | Sanctions/name screening expectations for financial institutions                       | Wolfsberg Group — Guidance on Sanctions Screening                                  | https://www.wolfsberg-principles.com/                                                                        | 2026-07-18 |
+| 27  | Travel Rule extended to crypto-asset transfers (originator/beneficiary data)           | Regulation (EU) 2023/1113 — Transfer of Funds Regulation (recast)                  | https://eur-lex.europa.eu/eli/reg/2023/1113/oj                                                               | 2026-07-18 |
+| 28  | DeFi / unhosted-wallet risk framing supporting the outside-custody-perimeter treatment | FATF — Targeted Update on Implementation of the FATF Standards on VAs/VASPs (2023) | https://www.fatf-gafi.org/en/publications/Fatfrecommendations/targeted-update-virtual-assets-vasps-2023.html | 2026-07-18 |

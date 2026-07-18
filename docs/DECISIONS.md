@@ -74,3 +74,52 @@ code delta was `defineConfig` now importing from 'vitest/config'.
 - **Diagram definitions moved to config** (`src/config/diagrams.ts`,
   Zod-validated, edge endpoints checked in tests): payment, stablecoin (with
   Travel Rule annotation) and DvP sequence variants; renderer is now generic.
+
+## 2026-07-18T05:35Z — M4 decisions (controls & compliance depth)
+
+- **Explainable policy engine as pure functions** (`src/engine/policy.ts`):
+  `evaluateTransaction` returns an ordered list of `PolicyDecision`s (ENT-001
+  entitlement, LIM-001 per-transaction, LIM-002 same-day daily, APP-001
+  four-eyes). Each decision is emitted as a `policy.<outcome>` audit event and
+  rendered on the transaction detail view, so "blocked by rule X because Y"
+  (PLAN Section 12) is literal. A blocking decision fails the transaction at
+  validation before screening runs.
+- **Four-eyes is embraced, not thresholded around.** The materiality threshold
+  is `min(perTransaction, 100_000)`, so most institutional payments require an
+  independent approver. Rather than raise the threshold to keep the M1–M3
+  golden paths single-persona, the flows now switch to an independent control
+  signatory before approving — the more faithful control and a better demo.
+  `approveTransaction` rejects self-approval by the initiator and rejects
+  personas lacking an `approve`/`admin` grant on the governing relationship.
+- **Relationship mapping centralised in `relationshipForType`.** Discovered via
+  the DvP integration test: `dsvp-settlement` is governed by the
+  `tokenisation-agent` relationship (the portfolio-manager initiator holds it),
+  not `payments`. Mapping to `payments` wrongly blocked DvP at ENT-001. One
+  helper now serves both initiation entitlement and approval checks.
+- **DeFi module is opt-in and entitlement-gated** (Section 13). The wizard adds
+  an opt-in toggle; when on, the session persists `defiEnabled`, materialises
+  two simulated positions (staking + LP) held `on-chain` outside the custody
+  perimeter, and grants the primary persona a `defi` view entitlement. The
+  `/defi` view shows an "outside Meridian custody perimeter" banner and
+  config-driven protocol risk labels; the nav entry is hidden unless opted in;
+  the control signatory (no `defi` grant) demonstrates the entitlement gate. No
+  wallet connect, key handling or signing — ever.
+- **`lastError` surfaced in the UI.** The store already captured mutation
+  errors; the transaction detail view now renders them so a four-eyes rejection
+  or policy block is visible to the user (and assertable in E2E).
+
+### M4 reflection
+
+- **Shipped** (targeting `v0.4.0-m4`): explainable policy decisions, per-tx +
+  daily limits, four-eyes approvals, screening at validation, opt-in DeFi
+  module. Gates green on Kali: lint, typecheck, prettier, 48 unit, 8
+  integration, 6 schema, `audit-ci`, build; E2E (Chromium + WebKit) green in
+  GitHub Actions incl. new `e2e/controls.spec.ts` (four-eyes, policy-block,
+  DeFi opt-in). Policy unit coverage expanded to entitlement/limit/approval/
+  relationship-mapping branches. Seeds: slice 20260105, DvP 20260319.
+- **Known issues / deferred**: screening remains deterministic rule-based (name
+  keywords) rather than seeded-probabilistic — sufficient for the demo and the
+  M4 gate; a seeded variety pass is optional future work. Editable per-persona
+  entitlement/limit overrides in the wizard remain deferred (templates only).
+  Evidence Register expanded to 28 entries (+4: four-eyes/BCBS, sanctions
+  screening/Wolfsberg, EU TFR crypto travel rule, FATF DeFi update).
