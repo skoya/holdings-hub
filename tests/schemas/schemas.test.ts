@@ -30,6 +30,7 @@ describe('core Zod schemas (PLAN Section 37)', () => {
     expect(parsed.auditLog).toEqual([]);
     expect(parsed.settings).toEqual({ locale: 'en', defiEnabled: false, livePrices: false });
     expect(parsed.pinnedPositions).toEqual({});
+    expect(parsed.clock.currentTs).toBe('2026-01-05T09:00:00.000Z');
   });
 
   it('rejects a wrong schemaVersion', () => {

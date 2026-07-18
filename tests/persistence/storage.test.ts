@@ -33,7 +33,7 @@ describe('persistence layer (PLAN Section 24)', () => {
     expect(list).toHaveLength(2);
     const names = list.map((s) => s.name).sort();
     expect(names).toEqual(['Fixture: Family Office CIO', 'Second session']);
-    expect(list.every((s) => s.schemaVersion === 1)).toBe(true);
+    expect(list.every((s) => s.schemaVersion === 2)).toBe(true);
     expect(list.every((s) => !Number.isNaN(Date.parse(s.savedAt)))).toBe(true);
   });
 
@@ -50,9 +50,13 @@ describe('persistence layer (PLAN Section 24)', () => {
     await expect(saveSession(bad)).rejects.toThrow();
   });
 
-  it('migrates an older envelope on load (v0 stub migration)', async () => {
+  it('migrates an older envelope on load (v0 -> v1 -> v2 chain)', async () => {
     const session = makeSession({ id: 'legacy-1' });
-    const legacyPayload = { ...session, schemaVersion: 0 };
+    // Strip the v2-only fields to simulate a genuinely old payload.
+    const { clock: _clock, activePersonaId: _ap, ...legacyPayload } = {
+      ...session,
+      schemaVersion: 0,
+    };
     await writeRawEnvelope('legacy-1', {
       schemaVersion: 0,
       savedAt: '2026-01-01T00:00:00.000Z',
@@ -60,7 +64,8 @@ describe('persistence layer (PLAN Section 24)', () => {
     });
     const loaded = await loadSession('legacy-1');
     expect(loaded).not.toBeNull();
-    expect(loaded!.schemaVersion).toBe(1);
+    expect(loaded!.schemaVersion).toBe(2);
+    expect(loaded!.clock.currentTs).toBe('2026-01-05T09:00:00.000Z');
     expect(loaded!.name).toBe(session.name);
   });
 

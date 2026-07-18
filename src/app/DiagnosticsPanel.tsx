@@ -19,13 +19,31 @@ function debugEnabled(search: string): boolean {
  */
 export function DiagnosticsPanel() {
   const location = useLocation();
-  const seed = useSessionStore((s) => s.seed);
-  const engineState = useSessionStore((s) => s.engineState);
+  const session = useSessionStore((s) => s.session);
   const enabled = debugEnabled(location.search);
 
-  const stateHash = useMemo(() => hashObject(engineState), [engineState]);
+  const stateHash = useMemo(
+    () => (session ? hashObject(session.engineState) : '—'),
+    [session],
+  );
 
   if (!enabled) return null;
+
+  const snapshot = session
+    ? {
+        id: session.id,
+        seed: session.seed,
+        clock: session.clock,
+        engineState: session.engineState,
+        counts: {
+          entities: session.entities.length,
+          personas: session.personas.length,
+          holdings: session.holdings.length,
+          transactions: session.transactions.length,
+          auditEvents: session.auditLog.length,
+        },
+      }
+    : null;
 
   return (
     <aside
@@ -36,18 +54,22 @@ export function DiagnosticsPanel() {
       <h2 className="mb-1 font-semibold uppercase tracking-wide text-white/70">Diagnostics</h2>
       <dl className="grid grid-cols-[auto,1fr] gap-x-4 gap-y-1">
         <dt className="text-white/60">Seed</dt>
-        <dd>{seed}</dd>
+        <dd>{session?.seed ?? 'no session'}</dd>
         <dt className="text-white/60">Schema version</dt>
         <dd>v{SCHEMA_VERSION}</dd>
+        <dt className="text-white/60">Sim clock (UTC)</dt>
+        <dd>{session?.clock.currentTs ?? '—'}</dd>
         <dt className="text-white/60">Engine state hash</dt>
-        <dd>{stateHash}</dd>
+        <dd data-testid="engine-hash">{stateHash}</dd>
       </dl>
-      <details className="mt-2">
-        <summary className="cursor-pointer text-white/70">Store snapshot</summary>
-        <pre className="mt-1 max-h-64 overflow-auto rounded bg-dark p-2">
-          {JSON.stringify({ seed, engineState }, null, 2)}
-        </pre>
-      </details>
+      {snapshot && (
+        <details className="mt-2">
+          <summary className="cursor-pointer text-white/70">Store snapshot</summary>
+          <pre className="mt-1 max-h-64 overflow-auto rounded bg-dark p-2">
+            {JSON.stringify(snapshot, null, 2)}
+          </pre>
+        </details>
+      )}
     </aside>
   );
 }
