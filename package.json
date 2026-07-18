@@ -1,7 +1,7 @@
 {
   "name": "holdings-hub",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "packageManager": "pnpm@9.15.9",
   "description": "Holdings Hub Prototype — fictional GSIB-neutral digital asset simulation SPA (Meridian Bank). Simulation only — no real transactions or investment advice.",
@@ -23,6 +23,7 @@
     "e2e": "playwright test",
     "check:schemas": "vitest run tests/config",
     "check:i18n": "node scripts/check-i18n-keys.mjs",
+    "check:licenses": "node scripts/check-licenses.mjs",
     "i18n:generate": "node scripts/translate.mjs"
   },
   "dependencies": {

@@ -1,0 +1,33 @@
+name: security
+on:
+  schedule:
+    - cron: '0 6 * * 1' # Mondays 06:00 UTC
+  workflow_dispatch: {}
+  pull_request:
+    paths:
+      - '.github/workflows/security.yml'
+      - 'scripts/check-licenses.mjs'
+      - 'pnpm-lock.yaml'
+permissions:
+  contents: read
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --audit-level=moderate || true # report-only
+      - run: pnpm run audit:deps # audit-ci gate (moderate+)
+      - run: pnpm run check:licenses # licence allowlist gate
+      # OSV is the weekly deep scan; on PRs the audit-ci + licence gates above
+      # are the fast deterministic checks (avoids PR-blocking on a transitive
+      # advisory the weekly scan is meant to triage).
+      - if: github.event_name != 'pull_request'
+        uses: google/osv-scanner-action/osv-scanner-action@v1
+        with:
+          scan-args: --lockfile=pnpm-lock.yaml
