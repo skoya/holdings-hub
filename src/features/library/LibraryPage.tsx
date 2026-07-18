@@ -142,7 +142,12 @@ export function LibraryPage() {
         ) : (
           <ul className="divide-y divide-line">
             {sessions.map((s) => (
-              <li key={s.id} className="flex items-center justify-between gap-3 py-3">
+              <li
+                key={s.id}
+                className="flex items-center justify-between gap-3 py-3"
+                data-testid="library-item"
+                data-session-id={s.id}
+              >
                 <div>
                   <p className="text-sm font-medium">{s.name}</p>
                   <p className="text-xs text-ink-soft">

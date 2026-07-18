@@ -6,8 +6,10 @@ import { createSessionViaWizard } from './helpers';
 test.describe('simulation library and deep links', () => {
   test('deep link restores a locally-stored session', async ({ page }) => {
     await createSessionViaWizard(page);
-    await page.goto('/');
-    const id = await page.getByTestId('session-id').getAttribute('data-session-id');
+    // Read the id from the library (IndexedDB-backed, survives a full reload —
+    // the in-memory store does not).
+    await page.goto('/#/library');
+    const id = await page.getByTestId('library-item').first().getAttribute('data-session-id');
     expect(id).toBeTruthy();
 
     await page.goto(`/#/open/${id}`);
