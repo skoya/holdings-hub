@@ -388,6 +388,57 @@ export const PERSONA_TEMPLATES: PersonaTemplate[] = [
     defaultDisplayName: 'Family Principal',
     grants: [...viewAll('custody'), ...viewAll('wallet-services')],
   },
+  {
+    role: 'external-auditor',
+    defaultDisplayName: 'External Auditor',
+    // Evidence access is intentionally view-only. Audit history is exposed by
+    // the workbench, never through a trust-bearing admin entitlement.
+    grants: [...viewAll('custody'), ...viewAll('payments'), ...viewAll('wallet-services')],
+  },
+];
+
+export interface PersonaJourney {
+  role: PersonaRole;
+  title: string;
+  objective: string;
+  scenario: string;
+  control: string;
+  nextAction: { label: string; to: string };
+}
+
+export const PERSONA_JOURNEYS: PersonaJourney[] = [
+  {
+    role: 'treasurer',
+    title: 'Liquidity & rail economics',
+    objective: 'Move liquidity while balancing cost, speed, calendars and trapped cash.',
+    scenario: 'Compare SWIFT and stablecoin rails for a cross-border supplier payment.',
+    control: 'May initiate eligible payments; a separate signatory must approve.',
+    nextAction: { label: 'Compare payment rails', to: '/transactions/new/payment' },
+  },
+  {
+    role: 'compliance-officer',
+    title: 'Screening & policy review',
+    objective: 'Review wallet, sanctions, Travel Rule and policy evidence before release.',
+    scenario: 'Investigate a held transfer and trace why each control passed or failed.',
+    control: 'Read-only evidence role; cannot initiate or approve value movement.',
+    nextAction: { label: 'Review transaction evidence', to: '/transactions' },
+  },
+  {
+    role: 'operations-manager',
+    title: 'Exception resolution',
+    objective: 'Resolve failed, pending or unmatched settlement without bypassing controls.',
+    scenario: 'Trace a delayed payment from instruction through its settlement timeline.',
+    control: 'Can initiate within a low operating limit; cannot self-approve.',
+    nextAction: { label: 'Inspect settlement timeline', to: '/timeline' },
+  },
+  {
+    role: 'external-auditor',
+    title: 'Independent evidence review',
+    objective: 'Reconstruct who did what, under which policy, and when.',
+    scenario: 'Sample a payment and verify initiation, four-eyes approval and audit integrity.',
+    control: 'Strictly view-only with no initiation, approval or administration grants.',
+    nextAction: { label: 'Open audit evidence', to: '/audit' },
+  },
 ];
 
 export function personaTemplate(role: PersonaRole): PersonaTemplate {

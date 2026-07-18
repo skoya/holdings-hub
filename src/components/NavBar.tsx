@@ -12,6 +12,7 @@ interface NavItem {
 const baseLinks: NavItem[] = [
   { to: '/', labelKey: 'nav.home', end: true },
   { to: '/holdings', labelKey: 'nav.holdings' },
+  { to: '/personas', labelKey: 'nav.personas' },
   { to: '/transactions', labelKey: 'nav.transactions' },
   { to: '/timeline', labelKey: 'nav.timeline' },
   { to: '/audit', labelKey: 'nav.audit' },

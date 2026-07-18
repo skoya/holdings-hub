@@ -356,6 +356,21 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             ],
             limits: { perTransaction: 10_000_000, daily: 25_000_000, currency: 'GBP' },
           },
+          ...(
+            ['treasurer', 'compliance-officer', 'operations-manager', 'external-auditor'] as const
+          )
+            .filter((role) => role !== preset.personaRole)
+            .map((role) => {
+              const support = personaTemplate(role);
+              return {
+                id: nextId(engine, 'per'),
+                entityId,
+                role,
+                displayName: support.defaultDisplayName,
+                grants: support.grants,
+                ...(support.limits ? { limits: support.limits } : {}),
+              };
+            }),
         ],
         activePersonaId: personaId,
         settings: { defiEnabled: input.defiEnabled ?? false },
