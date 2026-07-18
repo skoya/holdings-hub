@@ -47,3 +47,30 @@ Alternatives considered: allowlisting the advisories in audit-ci (rejected —
 hides a critical, violates M8 "no open moderate+" gate); Vite 8 (rejected —
 newest major, plugin ecosystem still settling). App code unchanged; the only
 code delta was `defineConfig` now importing from 'vitest/config'.
+
+## 2026-07-18T00:45Z — M1/M2 reflections
+
+- **M1 shipped** (v0.1.0-m1): all 11 deliverables; 28 unit tests; CI + Pages
+  green; deployed URL smoke-checked. Deferred: nothing. Notable decision: Vite
+  7 / Vitest 4 toolchain substitution (see above).
+- **M2 shipped** (v0.2.0-m2): full vertical slice; 46 unit/integration tests,
+  10 E2E specs green on Chromium + WebKit. Seeds used: 20260105 (slice).
+  Known issues/deferrals: E2E cannot run on the Kali build host (browser
+  system libraries need sudo) — GitHub Actions is the authoritative E2E gate;
+  screening outcomes are rule-based until M4; D3 graph is SVG-only at current
+  scale (canvas hybrid deferred until M3+ makes graphs large enough to need
+  it); CSV audit export joins the M6 ZIP bundle.
+
+## 2026-07-18T00:50Z — M3 decisions
+
+- **Scenario presets as the wizard's backbone**: preset = entity template +
+  persona template + portfolio (config-driven, Section 32). Custom free-form
+  portfolio building deferred — presets cover the demo value; a "custom"
+  preset would add form surface without new engine coverage.
+- **DvP demo as one-click scripted transaction** rather than a bespoke
+  multi-leg form: both legs are fixed by config (tokenised bond vs tokenised
+  deposit), settlement applies both legs atomically in one mutation, audited
+  as `holdings.dsvp-settled`.
+- **Diagram definitions moved to config** (`src/config/diagrams.ts`,
+  Zod-validated, edge endpoints checked in tests): payment, stablecoin (with
+  Travel Rule annotation) and DvP sequence variants; renderer is now generic.

@@ -1,30 +1,46 @@
 import { create } from 'zustand';
-import { DEFAULT_SEED, FAMILY_OFFICE_TEMPLATE } from '@/config/catalog';
+import {
+  SCENARIO_PRESETS,
+  entityTemplate,
+  personaTemplate,
+  scenarioPreset,
+} from '@/config/catalog';
 import type { Jurisdiction, Relationship } from '@/schemas';
 
 /** Draft state for the setup wizard (PLAN Section 7). Survives step navigation. */
 interface WizardDraft {
+  presetId: string;
   sessionName: string;
   entityName: string;
   jurisdiction: Jurisdiction;
   relationships: Relationship[];
   personaDisplayName: string;
   seed: number;
-  update: (partial: Partial<Omit<WizardDraft, 'update' | 'reset'>>) => void;
+  update: (partial: Partial<Omit<WizardDraft, 'update' | 'reset' | 'applyPreset'>>) => void;
+  applyPreset: (presetId: string) => void;
   reset: () => void;
 }
 
-const initial = {
-  sessionName: 'Family Office CIO — demo',
-  entityName: FAMILY_OFFICE_TEMPLATE.name,
-  jurisdiction: FAMILY_OFFICE_TEMPLATE.jurisdiction,
-  relationships: [...FAMILY_OFFICE_TEMPLATE.relationships] as Relationship[],
-  personaDisplayName: 'Investment Director (CIO)',
-  seed: DEFAULT_SEED,
-};
+function fromPreset(presetId: string) {
+  const preset = scenarioPreset(presetId);
+  const entity = entityTemplate(preset.entityType);
+  const persona = personaTemplate(preset.personaRole);
+  return {
+    presetId,
+    sessionName: `${preset.label} — demo`,
+    entityName: entity.defaultName,
+    jurisdiction: entity.defaultJurisdiction,
+    relationships: [...entity.relationships],
+    personaDisplayName: persona.defaultDisplayName,
+    seed: preset.defaultSeed,
+  };
+}
+
+const initial = fromPreset(SCENARIO_PRESETS[0]!.id);
 
 export const useWizardStore = create<WizardDraft>((set) => ({
   ...initial,
   update: (partial) => set(partial),
-  reset: () => set(initial),
+  applyPreset: (presetId) => set(fromPreset(presetId)),
+  reset: () => set(fromPreset(SCENARIO_PRESETS[0]!.id)),
 }));

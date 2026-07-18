@@ -1,8 +1,11 @@
 import type { Page } from '@playwright/test';
 
-/** Drive the wizard with default values and create a session. */
-export async function createSessionViaWizard(page: Page): Promise<void> {
+/** Drive the wizard and create a session; optionally pick a scenario preset. */
+export async function createSessionViaWizard(page: Page, presetId?: string): Promise<void> {
   await page.goto('/#/wizard/step/1');
+  if (presetId) {
+    await page.getByTestId('preset-select').selectOption(presetId);
+  }
   for (let step = 1; step < 5; step++) {
     await page.getByRole('button', { name: 'Next' }).click();
   }

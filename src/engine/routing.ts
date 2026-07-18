@@ -69,14 +69,20 @@ export function buildRouteComparison(args: {
     options.push({
       id: 'route-internal',
       rail: 'internal-book' as const,
-      label: 'Meridian internal book transfer',
+      label:
+        type === 'dsvp-settlement'
+          ? 'Simulated permissioned ledger (atomic DvP)'
+          : 'Meridian internal book transfer',
       costBps: 0,
       feeFlat: 0,
       fxSpreadBps: 0,
       etaMinutes: eta,
       settlementDate: addMinutes(nowTs, eta),
-      cutoffNote: 'internal — immediate',
-      controls: [],
+      cutoffNote:
+        type === 'dsvp-settlement'
+          ? 'both legs settle atomically — no principal risk window'
+          : 'internal — immediate',
+      controls: type === 'dsvp-settlement' ? ['dvp-atomicity', 'ledger-finality'] : [],
       available247: true,
     });
   }

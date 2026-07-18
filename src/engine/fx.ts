@@ -12,9 +12,16 @@ const BASE_RATES: Record<string, number> = {
   'USD:GBP': 1 / 1.27,
   'USD:CHF': 0.88,
   'CHF:USD': 1 / 0.88,
+  'EUR:GBP': 0.85,
+  'GBP:EUR': 1 / 0.85,
+  'EUR:USD': 1.08,
+  'USD:EUR': 1 / 1.08,
+  'EUR:CHF': 0.94,
+  'CHF:EUR': 1 / 0.94,
   'GBP:GBP': 1,
   'CHF:CHF': 1,
   'USD:USD': 1,
+  'EUR:EUR': 1,
 };
 
 export function fxRate(market: Stream, from: string, to: string): number {

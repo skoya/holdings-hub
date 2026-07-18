@@ -8,13 +8,7 @@ import { buildRouteComparison } from '@/engine/routing';
 import { runScreening } from '@/engine/screening';
 import { buildTravelRulePacket } from '@/engine/travelRule';
 import { convert } from '@/engine/fx';
-import {
-  CIO_GRANTS,
-  CIO_LIMITS,
-  FAMILY_OFFICE_TEMPLATE,
-  SLICE_PORTFOLIO,
-  assetById,
-} from '@/config/catalog';
+import { assetById, personaTemplate, scenarioPreset } from '@/config/catalog';
 import { saveSession } from '@/persistence/storage';
 import {
   SIM_EPOCH,
@@ -34,6 +28,7 @@ import {
  */
 
 export interface WizardInput {
+  presetId: string;
   sessionName: string;
   entityName: string;
   jurisdiction: Jurisdiction;
@@ -64,6 +59,7 @@ interface SessionStore {
   engine: Engine | null;
   lastError: string | null;
   createSliceSession: (input: WizardInput) => string;
+  createDsvpDemo: () => string;
   adoptSession: (session: SimulationSession) => void;
   clearSession: () => void;
   exportSessionJson: () => string;
@@ -179,6 +175,8 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     lastError: null,
 
     createSliceSession: (input) => {
+      const preset = scenarioPreset(input.presetId);
+      const persona = personaTemplate(preset.personaRole);
       const engine = createEngine(input.seed);
       const entityId = nextId(engine, 'ent');
       const personaId = nextId(engine, 'per');
@@ -188,7 +186,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       ).join('')}`;
 
       const market = engine.fork('market');
-      const holdings = SLICE_PORTFOLIO.map(([assetRef, quantity, custody, source]) => {
+      const holdings = preset.portfolio.map(([assetRef, quantity, custody, source]) => {
         const asset = assetById(assetRef);
         const valueInGbp =
           asset.currency === 'GBP' ? quantity : convert(market, quantity, asset.currency, 'GBP');
@@ -220,7 +218,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           {
             id: entityId,
             name: input.entityName,
-            type: FAMILY_OFFICE_TEMPLATE.type,
+            type: preset.entityType,
             jurisdiction: input.jurisdiction,
             lei,
             parentId: null,
@@ -231,10 +229,10 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           {
             id: personaId,
             entityId,
-            role: 'cio',
+            role: preset.personaRole,
             displayName: input.personaDisplayName,
-            grants: CIO_GRANTS,
-            limits: CIO_LIMITS,
+            grants: persona.grants,
+            ...(persona.limits ? { limits: persona.limits } : {}),
           },
         ],
         activePersonaId: personaId,
@@ -361,6 +359,64 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       return txId;
     },
 
+    createDsvpDemo: () => {
+      let txId = '';
+      mutate((session, engine) => {
+        const hasLegs =
+          session.holdings.some((h) => h.assetRef === 'asset-tokenised-bond') &&
+          session.holdings.some((h) => h.assetRef === 'asset-tokenised-deposit');
+        if (!hasLegs) {
+          throw new Error(
+            'DvP demo needs tokenised bond and tokenised deposit holdings (asset-manager preset)',
+          );
+        }
+        const originator = originatorParty(session);
+        txId = nextId(engine, 'tx');
+        const ts = session.clock.currentTs;
+        const beneficiary: Party = {
+          name: 'Kestrel Securities LLC (counterparty)',
+          account: 'SIM:US00KSTL00000004',
+          jurisdiction: 'US',
+          institution: 'Kestrel Securities LLC (fictional)',
+        };
+        const tx: Transaction = {
+          id: txId,
+          type: 'dsvp-settlement',
+          state: 'draft',
+          amount: 1_000_000,
+          currency: 'USD',
+          assetRef: 'asset-tokenised-bond',
+          originator,
+          beneficiary,
+          createdAt: ts,
+          updatedAt: ts,
+          events: [{ state: 'draft', ts }],
+          route: buildRouteComparison({
+            routingStream: engine.fork('routing'),
+            type: 'dsvp-settlement',
+            nowTs: ts,
+            destJurisdiction: 'US',
+            crossCurrency: false,
+          }),
+          reference: nextReference(engine),
+          metadata: {
+            deliveryLeg: 'asset-tokenised-bond +1,000,000 USD face (from counterparty)',
+            paymentLeg: 'asset-tokenised-deposit -1,000,000 USD (to counterparty)',
+            settlementModel: 'atomic delivery-versus-payment on simulated permissioned ledger',
+          },
+        };
+        const next = { ...session, transactions: [...session.transactions, tx] };
+        return withAudit(
+          next,
+          engine,
+          'transaction.draft',
+          `tx:${txId}`,
+          'DvP demo: tokenised bond purchase settled against tokenised cash',
+        );
+      });
+      return txId;
+    },
+
     validateTransaction: (txId) => {
       mutate((session, engine) => {
         const tx = getTx(session, txId);
@@ -415,24 +471,47 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       mutate((session, engine) => {
         let s = transition(session, engine, txId, 'in-flight');
         const tx = getTx(s, txId);
-        // Settlement effects: debit the funding holding (amount + flat fee).
         const route = tx.route?.options.find((o) => o.id === tx.route?.selectedRouteId);
         const fee = route ? route.feeFlat + (tx.amount * route.costBps) / 10_000 : 0;
-        s = {
-          ...s,
-          holdings: s.holdings.map((h) =>
-            h.assetRef === tx.assetRef
-              ? { ...h, quantity: Math.round((h.quantity - tx.amount - fee) * 100) / 100 }
-              : h,
-          ),
-        };
-        s = withAudit(
-          s,
-          engine,
-          'holdings.debited',
-          `holding:${tx.assetRef}`,
-          `Debit ${tx.amount} ${tx.currency} + ${fee.toFixed(2)} fees (simulated)`,
-        );
+        if (tx.type === 'dsvp-settlement') {
+          // Atomic DvP: both legs move together — bond in, tokenised cash out.
+          s = {
+            ...s,
+            holdings: s.holdings.map((h) => {
+              if (h.assetRef === 'asset-tokenised-bond') {
+                return { ...h, quantity: Math.round((h.quantity + tx.amount) * 100) / 100 };
+              }
+              if (h.assetRef === 'asset-tokenised-deposit') {
+                return { ...h, quantity: Math.round((h.quantity - tx.amount - fee) * 100) / 100 };
+              }
+              return h;
+            }),
+          };
+          s = withAudit(
+            s,
+            engine,
+            'holdings.dsvp-settled',
+            `tx:${txId}`,
+            `Atomic DvP: +${tx.amount} tBOND face / -${tx.amount + fee} tDEP (simulated)`,
+          );
+        } else {
+          // Settlement effects: debit the funding holding (amount + flat fee).
+          s = {
+            ...s,
+            holdings: s.holdings.map((h) =>
+              h.assetRef === tx.assetRef
+                ? { ...h, quantity: Math.round((h.quantity - tx.amount - fee) * 100) / 100 }
+                : h,
+            ),
+          };
+          s = withAudit(
+            s,
+            engine,
+            'holdings.debited',
+            `holding:${tx.assetRef}`,
+            `Debit ${tx.amount} ${tx.currency} + ${fee.toFixed(2)} fees (simulated)`,
+          );
+        }
         return transition(
           s,
           engine,

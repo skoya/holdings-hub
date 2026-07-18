@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/Card';
 import { Badge } from '@/components/Badge';
 import { SessionGuard } from '@/features/common/SessionGuard';
@@ -14,17 +14,35 @@ export function stateTone(state: TransactionState): 'neutral' | 'accent' | 'succ
 
 function TransactionsView() {
   const session = useSessionStore((s) => s.session)!;
+  const createDsvpDemo = useSessionStore((s) => s.createDsvpDemo);
+  const navigate = useNavigate();
+  const dsvpAvailable =
+    session.holdings.some((h) => h.assetRef === 'asset-tokenised-bond') &&
+    session.holdings.some((h) => h.assetRef === 'asset-tokenised-deposit');
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="text-xl font-semibold">Transactions</h1>
-        <div className="flex gap-3 text-sm">
+        <div className="flex flex-wrap gap-3 text-sm">
           <Link to="/transactions/new/payment" className="text-accent underline">
             New cross-border payment
           </Link>
           <Link to="/transactions/new/usdc" className="text-accent underline">
             New USDC transfer
           </Link>
+          {dsvpAvailable && (
+            <button
+              type="button"
+              className="text-accent underline"
+              data-testid="new-dsvp"
+              onClick={() => {
+                const txId = createDsvpDemo();
+                navigate(`/transactions/${txId}`);
+              }}
+            >
+              New DvP settlement (demo)
+            </button>
+          )}
         </div>
       </div>
       <Card>
