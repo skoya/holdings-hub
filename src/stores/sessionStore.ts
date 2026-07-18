@@ -259,7 +259,13 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     exportSessionJson: () => {
       const { session, engine } = get();
       if (!session || !engine) throw new Error('No active session');
-      return JSON.stringify({ ...session, engineState: engine.serialize() }, null, 2);
+      // Canonicalise through the schema so export -> import -> export is
+      // byte-identical (Zod rebuilds objects in schema key order).
+      const canonical = SimulationSessionSchema.parse({
+        ...session,
+        engineState: engine.serialize(),
+      });
+      return JSON.stringify(canonical, null, 2);
     },
 
     createPayment: (input) => {
