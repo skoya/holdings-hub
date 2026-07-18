@@ -66,4 +66,58 @@ describe('policy engine', () => {
       true,
     );
   });
+
+  it('passes four-eyes below the materiality threshold without blocking', () => {
+    const session = makeSession();
+    const actor = session.personas[0]!;
+    const decisions = evaluateTransaction(
+      session,
+      { ...transaction(session), amount: 50_000 },
+      actor,
+    );
+    expect(decisions.find((item) => item.ruleId === 'APP-001')?.outcome).toBe('pass');
+    expect(hasBlockingDecision(decisions)).toBe(false);
+  });
+
+  it('blocks a daily-limit breach across same-day transactions', () => {
+    const base = makeSession();
+    const priorTx = {
+      ...transaction(base),
+      id: 'tx-prior',
+      amount: 4_950_000,
+      state: 'settled' as const,
+    };
+    const session = { ...base, transactions: [priorTx] };
+    const actor = session.personas[0]!;
+    const decisions = evaluateTransaction(
+      session,
+      { ...transaction(session), amount: 100_000 },
+      actor,
+    );
+    expect(decisions.find((item) => item.ruleId === 'LIM-002')?.outcome).toBe('block');
+    expect(hasBlockingDecision(decisions)).toBe(true);
+  });
+
+  it('evaluates stablecoin transfers against the wallet-services entitlement', () => {
+    const session = makeSession();
+    const actor = session.personas[0]!;
+    const decisions = evaluateTransaction(
+      session,
+      { ...transaction(session), type: 'stablecoin-transfer' as const, amount: 20_000 },
+      actor,
+    );
+    expect(decisions.find((item) => item.ruleId === 'ENT-001')?.outcome).toBe('pass');
+    expect(hasBlockingDecision(decisions)).toBe(false);
+  });
+
+  it('does not block when a persona has no explicit limits', () => {
+    const session = makeSession();
+    const actor = { ...session.personas[0]!, limits: undefined };
+    const decisions = evaluateTransaction(
+      session,
+      { ...transaction(session), amount: 5_000 },
+      actor,
+    );
+    expect(hasBlockingDecision(decisions)).toBe(false);
+  });
 });

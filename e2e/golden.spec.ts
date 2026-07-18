@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { createSessionViaWizard } from './helpers';
+import { approveAsSecondPersona, createSessionViaWizard } from './helpers';
 
 /** Golden-path scenarios 2 and 3 (M3 gate: three golden paths incl. slice.spec). */
 
@@ -24,7 +24,7 @@ test('asset manager preset: DvP settlement demo end-to-end', async ({ page }) =>
   await expect(page.getByTestId('route-comparison')).toContainText('atomic DvP');
 
   await page.getByTestId('btn-validate').click();
-  await page.getByTestId('btn-approve').click();
+  await approveAsSecondPersona(page);
   await page.getByTestId('btn-route-internal-book').click();
   await page.getByTestId('btn-settle').click();
   await expect(page.getByTestId('lifecycle-events')).toContainText('settled');

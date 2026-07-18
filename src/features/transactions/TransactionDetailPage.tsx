@@ -19,6 +19,7 @@ function TransactionDetailView() {
   const selectRoute = useSessionStore((s) => s.selectRoute);
   const runSettlement = useSessionStore((s) => s.runSettlement);
   const switchPersona = useSessionStore((s) => s.switchPersona);
+  const lastError = useSessionStore((s) => s.lastError);
 
   const tx = session.transactions.find((t) => t.id === txId);
   if (!tx) {
@@ -37,6 +38,16 @@ function TransactionDetailView() {
           {tx.type} · {new Intl.NumberFormat('en-GB').format(tx.amount)} {tx.currency}
         </span>
       </div>
+
+      {lastError && (
+        <div
+          className="rounded-lg border border-accent bg-panel p-3 text-sm text-accent"
+          role="alert"
+          data-testid="tx-error"
+        >
+          {lastError}
+        </div>
+      )}
 
       <Card title="Next action">
         <div className="flex flex-wrap gap-3">

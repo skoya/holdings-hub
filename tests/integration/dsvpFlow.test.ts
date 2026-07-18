@@ -27,7 +27,11 @@ describe('DvP settlement demo (PLAN Section 10/40 M3)', () => {
     const txId = useSessionStore.getState().createDsvpDemo();
     const api = useSessionStore.getState();
     api.validateTransaction(txId);
-    api.approveTransaction(txId);
+    // Four-eyes: the 1,000,000 DvP is above threshold — an independent
+    // signatory (not the initiating portfolio manager) approves it.
+    const signatory = api.session!.personas.find((p) => p.role === 'authorised-signatory')!;
+    api.switchPersona(signatory.id);
+    useSessionStore.getState().approveTransaction(txId);
     api.selectRoute(txId, 'route-internal');
     api.runSettlement(txId);
 

@@ -36,6 +36,8 @@ export interface WizardInput {
   relationships: SimulationSession['entities'][number]['relationships'];
   personaDisplayName: string;
   seed: number;
+  /** Opt-in DeFi module (PLAN Section 13). Off by default. */
+  defiEnabled?: boolean;
 }
 
 export interface PaymentInput {
@@ -209,6 +211,44 @@ export const useSessionStore = create<SessionStore>((set, get) => {
         };
       });
 
+      // DeFi opt-in module (Section 13): simulated positions sit OUTSIDE the
+      // Meridian custody perimeter. Only materialised when the wizard opt-in is
+      // on, so default sessions are unchanged (holdings === portfolio length).
+      const defiHoldings = input.defiEnabled
+        ? ([
+            ['asset-staked-eth', 340_000],
+            ['asset-lp-share', 180_000],
+          ] as const).map(([assetRef, quantity]) => {
+            const asset = assetById(assetRef);
+            const valueInGbp = convert(market, quantity, asset.currency, 'GBP');
+            return {
+              id: nextId(engine, 'hld'),
+              assetRef,
+              quantity,
+              valuation: {
+                value: Math.round(valueInGbp * 100) / 100,
+                currency: 'GBP',
+                asOf: SIM_EPOCH,
+                mode: 'deterministic' as const,
+              },
+              custodyLocation: 'on-chain' as const,
+              ...(asset.network ? { network: asset.network } : {}),
+              encumbrance: 'free' as const,
+              authoritativeSource: 'external' as const,
+            };
+          })
+        : [];
+
+      // DeFi visibility is entitlement-gated: grant the primary persona a defi
+      // view entitlement only when opted in. The control signatory is left
+      // without it, so switching personas demonstrates the gate.
+      const primaryGrants = input.defiEnabled
+        ? [
+            ...persona.grants,
+            { relationship: 'wallet-services' as const, assetClass: 'defi' as const, level: 'view' as const },
+          ]
+        : persona.grants;
+
       let session: SimulationSession = SimulationSessionSchema.parse({
         id: nextId(engine, 'session'),
         name: input.sessionName,
@@ -233,7 +273,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             entityId,
             role: preset.personaRole,
             displayName: input.personaDisplayName,
-            grants: persona.grants,
+            grants: primaryGrants,
             ...(persona.limits ? { limits: persona.limits } : {}),
           },
           {
@@ -250,7 +290,8 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           },
         ],
         activePersonaId: personaId,
-        holdings,
+        settings: { defiEnabled: input.defiEnabled ?? false },
+        holdings: [...holdings, ...defiHoldings],
         transactions: [],
         auditLog: [],
       });
