@@ -1,0 +1,17 @@
+/* Meridian Bank design tokens (PLAN Section 5). Single source of truth —
+   Tailwind maps these variables in tailwind.config.ts; D3/canvas code reads
+   them via getComputedStyle. */
+:root {
+  --dark: #171a21; /* header/nav */
+  --dark-2: #20242e; /* secondary dark */
+  --accent: #d81f2a; /* red accent — accents/borders/badges, not body text */
+  --bg: #f4f5f7; /* app background */
+  --panel: #ffffff; /* cards/panels */
+  --ink: #16181d; /* primary text */
+  --ink-soft: #5a6270; /* secondary text */
+  --line: #e3e6eb; /* borders/dividers */
+
+  /* Simulation disclaimer banner: dark text on amber, contrast >= 4.5:1 */
+  --banner: #f0b429;
+  --banner-ink: #231a02;
+}
