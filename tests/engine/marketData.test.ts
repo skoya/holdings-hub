@@ -30,6 +30,8 @@ describe('marketData.fetchLivePrices (PLAN Section 25)', () => {
   });
 
   it('throws when the response carries no usable prices', async () => {
-    await expect(fetchLivePrices(['BTC'], 'now', mockFetch(200, { bitcoin: {} }))).rejects.toThrow();
+    await expect(
+      fetchLivePrices(['BTC'], 'now', mockFetch(200, { bitcoin: {} })),
+    ).rejects.toThrow();
   });
 });

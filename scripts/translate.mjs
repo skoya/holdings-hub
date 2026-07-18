@@ -72,8 +72,7 @@ const OVERRIDES = {
       'Sélectionnez ou créez une session de simulation pour explorer les avoirs, les paiements et les contrôles sur les réseaux traditionnels et numériques.',
     'prices.live': 'Prix en direct',
     'prices.deterministic': 'Prix déterministes',
-    'prices.liveFailed':
-      'Prix en direct indisponibles — utilisation de valeurs déterministes.',
+    'prices.liveFailed': 'Prix en direct indisponibles — utilisation de valeurs déterministes.',
   },
   ja: {
     'app.title': 'Meridian Bank',
