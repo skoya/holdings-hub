@@ -230,3 +230,42 @@ fuzz.test.ts`): hostile/malformed payloads are rejected via `safeParse`;
   seeded-probabilistic screening (currently rule-based); editable per-persona
   entitlement/limit overrides in the wizard; richer mobile drill-down;
   committed static screenshots; live NVDA/VoiceOver verification.
+
+## 2026-07-18T07:55Z — Enhancement phase (PLAN Section 46, Fable-reviewed)
+
+Trigger met: `v1.0.0` tagged, all four workflows green on main, Pages live,
+5-hour usage <80%. A Fable review of the delivered app produced
+`docs/ENHANCEMENT-BACKLOG.md` (12 items across three groups: M2-slice
+narrative, controls depth, reach/debt) and ranked two picks for this session.
+
+- **Selection rationale.** Built **pick 1 — rail economics** (S, high demo
+  value): the highest value/complexity item and the one that most sharpens the
+  M2 slide — the route table now answers "how much CHF actually arrives, and how
+  fast" per rail. Pick 2 (seeded-probabilistic screening, M) was **deferred**:
+  it carries a genuine determinism invariant (each screening call must consume a
+  fixed number of draws regardless of branch, or count-based engine restore
+  desyncs), and with the 5-hour window already ~54% consumed, starting an
+  M-sized change risked breaching the Section 46.3 stop rule (≤60% of a window)
+  mid-build. One clean, fully-gated enhancement beats a half-finished second.
+- **Rail economics decisions.** `routeEconomics()` is a pure helper (no draws)
+  so it is safe at render time. The indicative GBP→CHF rate is drawn once at
+  creation from a **dedicated `fx` stream** — a fresh namespace, so it does not
+  perturb the market/valuation/routing/screening streams and replays
+  identically (PLAN Section 23). It is stored as a string in `tx.metadata`
+  (`z.record(z.string())`), so there is **no schema change and no migration**,
+  and pre-enhancement sessions render the table without the new columns
+  (graceful degradation). The rate is explicitly labelled indicative, not a
+  quoted or executable rate (content guardrails, Section 29).
+
+### Enhancement reflection
+
+- **Shipped** (`v1.1.0-enhancements`): rail economics — all-in cost +
+  estimated-beneficiary-receives columns and a delta callout on the route
+  comparison. Tests: 3 `routeEconomics` unit cases, an integration assertion
+  that the captured rate is in-band and deterministic, and a slice E2E assertion
+  for the received cells + delta. Gates green: CI + E2E (Chromium + WebKit).
+- **Backlog remaining** (High-value first): seeded-probabilistic screening;
+  funds-sufficiency policy rule (FND-001 — settlement can currently drive
+  holdings negative); editable per-persona entitlement/limit overrides. A future
+  enhancement session (next 5-hour window) can pick these up per Section 46's
+  repeat condition; the funds-sufficiency rule is the safest quick win.
