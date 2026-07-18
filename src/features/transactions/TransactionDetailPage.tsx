@@ -55,7 +55,9 @@ function TransactionDetailView() {
                 data-testid="approval-persona"
               >
                 {session.personas.map((persona) => (
-                  <option key={persona.id} value={persona.id}>{persona.displayName} · {persona.role}</option>
+                  <option key={persona.id} value={persona.id}>
+                    {persona.displayName} · {persona.role}
+                  </option>
                 ))}
               </select>
               <Button onClick={() => approveTransaction(tx.id)} data-testid="btn-approve">
@@ -132,7 +134,15 @@ function TransactionDetailView() {
             {tx.policyDecisions.map((decision) => (
               <li key={decision.ruleId} className="flex flex-wrap items-center gap-2">
                 <span className="font-mono text-xs">{decision.ruleId}</span>
-                <Badge tone={decision.outcome === 'pass' ? 'success' : decision.outcome === 'block' ? 'accent' : 'warning'}>
+                <Badge
+                  tone={
+                    decision.outcome === 'pass'
+                      ? 'success'
+                      : decision.outcome === 'block'
+                        ? 'accent'
+                        : 'warning'
+                  }
+                >
                   {decision.outcome}
                 </Badge>
                 <span className="text-ink-soft">{decision.explanation}</span>

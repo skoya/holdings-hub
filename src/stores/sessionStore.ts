@@ -491,7 +491,8 @@ export const useSessionStore = create<SessionStore>((set, get) => {
         }
         const relationship = tx.type === 'stablecoin-transfer' ? 'wallet-services' : 'payments';
         const canApprove = actor.grants.some(
-          (grant) => grant.relationship === relationship && ['approve', 'admin'].includes(grant.level),
+          (grant) =>
+            grant.relationship === relationship && ['approve', 'admin'].includes(grant.level),
         );
         if (!canApprove) throw new Error(`${actor.displayName} lacks approval entitlement`);
         const approved = updateTx(session, txId, (item) => ({

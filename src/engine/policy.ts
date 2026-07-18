@@ -7,7 +7,9 @@ export function evaluateTransaction(
 ): PolicyDecision[] {
   const decisions: PolicyDecision[] = [];
   const grant = actor.grants.find(
-    (item) => item.relationship === (transaction.type === 'stablecoin-transfer' ? 'wallet-services' : 'payments'),
+    (item) =>
+      item.relationship ===
+      (transaction.type === 'stablecoin-transfer' ? 'wallet-services' : 'payments'),
   );
 
   if (!grant || grant.level === 'view') {
