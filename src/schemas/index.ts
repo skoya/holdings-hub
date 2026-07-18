@@ -213,6 +213,12 @@ export const ScreeningResultSchema = z.object({
   note: z.string(),
 });
 
+export const PolicyDecisionSchema = z.object({
+  ruleId: z.string().min(1),
+  outcome: z.enum(['pass', 'require-approval', 'block']),
+  explanation: z.string().min(1),
+});
+
 export const TransactionSchema = z.object({
   id: z.string().min(1),
   type: TransactionTypeSchema,
@@ -228,6 +234,9 @@ export const TransactionSchema = z.object({
   route: RouteComparisonSchema.optional(),
   travelRule: TravelRulePacketSchema.optional(),
   screening: ScreeningResultSchema.optional(),
+  policyDecisions: z.array(PolicyDecisionSchema).default([]),
+  initiatedByPersonaId: z.string().optional(),
+  approvedByPersonaId: z.string().optional(),
   reference: z.string().min(1),
   metadata: z.record(z.string()).default({}),
 });
@@ -287,6 +296,7 @@ export type RouteComparison = z.infer<typeof RouteComparisonSchema>;
 export type TravelRulePacket = z.infer<typeof TravelRulePacketSchema>;
 export type LifecycleEvent = z.infer<typeof LifecycleEventSchema>;
 export type ScreeningResult = z.infer<typeof ScreeningResultSchema>;
+export type PolicyDecision = z.infer<typeof PolicyDecisionSchema>;
 export type Transaction = z.infer<typeof TransactionSchema>;
 export type SessionSettings = z.infer<typeof SessionSettingsSchema>;
 export type SimulationSession = z.infer<typeof SimulationSessionSchema>;

@@ -18,6 +18,7 @@ function TransactionDetailView() {
   const approveTransaction = useSessionStore((s) => s.approveTransaction);
   const selectRoute = useSessionStore((s) => s.selectRoute);
   const runSettlement = useSessionStore((s) => s.runSettlement);
+  const switchPersona = useSessionStore((s) => s.switchPersona);
 
   const tx = session.transactions.find((t) => t.id === txId);
   if (!tx) {
@@ -45,9 +46,22 @@ function TransactionDetailView() {
             </Button>
           )}
           {tx.state === 'pending-approval' && (
-            <Button onClick={() => approveTransaction(tx.id)} data-testid="btn-approve">
-              Approve
-            </Button>
+            <>
+              <select
+                aria-label="Acting persona"
+                className="rounded border border-line bg-panel px-3 py-2 text-sm"
+                value={session.activePersonaId ?? ''}
+                onChange={(event) => switchPersona(event.target.value)}
+                data-testid="approval-persona"
+              >
+                {session.personas.map((persona) => (
+                  <option key={persona.id} value={persona.id}>{persona.displayName} · {persona.role}</option>
+                ))}
+              </select>
+              <Button onClick={() => approveTransaction(tx.id)} data-testid="btn-approve">
+                Approve
+              </Button>
+            </>
           )}
           {tx.state === 'approved' &&
             tx.route?.options.map((o) => (
@@ -111,6 +125,22 @@ function TransactionDetailView() {
           )}
         </Card>
       </div>
+
+      {tx.policyDecisions.length > 0 && (
+        <Card title="Policy decisions">
+          <ul className="space-y-2 text-sm" data-testid="policy-decisions">
+            {tx.policyDecisions.map((decision) => (
+              <li key={decision.ruleId} className="flex flex-wrap items-center gap-2">
+                <span className="font-mono text-xs">{decision.ruleId}</span>
+                <Badge tone={decision.outcome === 'pass' ? 'success' : decision.outcome === 'block' ? 'accent' : 'warning'}>
+                  {decision.outcome}
+                </Badge>
+                <span className="text-ink-soft">{decision.explanation}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
 
       {tx.route && (
         <Card title="Route comparison">
