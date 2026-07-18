@@ -12,7 +12,9 @@ import { Link } from 'react-router-dom';
  */
 function TimelineView() {
   const session = useSessionStore((s) => s.session)!;
-  const [filter, setFilter] = useState<'all' | 'transaction' | 'screening' | 'session'>('all');
+  const [filter, setFilter] = useState<'all' | 'transaction' | 'screening' | 'persona' | 'session'>(
+    'all',
+  );
 
   const items = useMemo(() => {
     return session.auditLog
@@ -21,7 +23,12 @@ function TimelineView() {
         if (filter === 'transaction')
           return e.action.startsWith('transaction.') || e.action.startsWith('route.');
         if (filter === 'screening') return e.action.startsWith('screening.');
-        return e.action.startsWith('session.') || e.action.startsWith('holdings.');
+        if (filter === 'persona') return e.action.startsWith('persona.');
+        return (
+          e.action.startsWith('session.') ||
+          e.action.startsWith('holdings.') ||
+          e.action.startsWith('persona.')
+        );
       })
       .slice()
       .sort((a, b) => a.ts.localeCompare(b.ts));
@@ -34,7 +41,7 @@ function TimelineView() {
         <span className="text-sm text-ink-soft">All timestamps UTC (simulation clock)</span>
       </div>
       <div className="flex flex-wrap gap-2">
-        {(['all', 'transaction', 'screening', 'session'] as const).map((f) => (
+        {(['all', 'transaction', 'screening', 'persona', 'session'] as const).map((f) => (
           <Chip key={f} selected={filter === f} onClick={() => setFilter(f)}>
             {f}
           </Chip>

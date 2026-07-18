@@ -16,6 +16,7 @@ interface GraphNode extends SimulationNodeDatum {
   id: string;
   label: string;
   kind: 'bank' | 'entity' | 'persona' | 'holding' | 'network' | 'custodian';
+  active?: boolean;
 }
 
 type GraphLink = SimulationLinkDatum<GraphNode>;
@@ -47,7 +48,12 @@ function GraphView() {
       links.push({ source: 'meridian', target: entity.id });
     }
     for (const persona of session.personas) {
-      nodes.push({ id: persona.id, label: persona.displayName, kind: 'persona' });
+      nodes.push({
+        id: persona.id,
+        label: persona.displayName,
+        kind: 'persona',
+        active: persona.id === session.activePersonaId,
+      });
       links.push({ source: persona.entityId, target: persona.id });
     }
     const networks = new Set<string>();
@@ -132,7 +138,13 @@ function GraphView() {
             if (!p) return null;
             return (
               <g key={n.id} transform={`translate(${p.x},${p.y})`}>
-                <circle r={n.kind === 'bank' ? 16 : 10} fill={KIND_COLOR[n.kind]} />
+                <circle
+                  r={n.kind === 'bank' ? 16 : n.active ? 14 : 10}
+                  fill={KIND_COLOR[n.kind]}
+                  stroke={n.active ? 'var(--accent)' : 'none'}
+                  strokeWidth={n.active ? 4 : 0}
+                  data-testid={n.active ? 'active-persona-node' : undefined}
+                />
                 <text
                   y={n.kind === 'bank' ? 30 : 24}
                   textAnchor="middle"
@@ -140,6 +152,7 @@ function GraphView() {
                   fill="var(--ink)"
                 >
                   {n.label}
+                  {n.active ? ' (active)' : ''}
                 </text>
               </g>
             );

@@ -19,6 +19,7 @@ import {
   SimulationSessionSchema,
   type Jurisdiction,
   type Party,
+  type PersonaRole,
   type SimulationSession,
   type Transaction,
   type TransactionState,
@@ -162,6 +163,41 @@ function originatorParty(session: SimulationSession): Party {
     jurisdiction: entity ? entity.jurisdiction : 'GB',
     institution: 'Meridian Bank (fictional)',
   };
+}
+
+const OPERATIONAL_PERSONA_ROLES: PersonaRole[] = [
+  'treasurer',
+  'compliance-officer',
+  'operations-manager',
+  'external-auditor',
+];
+
+/** Backfill role journeys into sessions saved before the persona workbench. */
+function enrichPersonaRoster(session: SimulationSession, engine: Engine): SimulationSession {
+  const entityId = session.entities[0]?.id;
+  if (!entityId) return session;
+  const existing = new Set(session.personas.map((persona) => persona.role));
+  const missing = OPERATIONAL_PERSONA_ROLES.filter((role) => !existing.has(role));
+  if (missing.length === 0) return session;
+
+  const personas = missing.map((role) => {
+    const template = personaTemplate(role);
+    return {
+      id: nextId(engine, 'per'),
+      entityId,
+      role,
+      displayName: template.defaultDisplayName,
+      grants: template.grants,
+      ...(template.limits ? { limits: template.limits } : {}),
+    };
+  });
+  return withAudit(
+    { ...session, personas: [...session.personas, ...personas] },
+    engine,
+    'session.personas-upgraded',
+    `session:${session.id}`,
+    `Added role journeys: ${missing.join(', ')}`,
+  );
 }
 
 export const useSessionStore = create<SessionStore>((set, get) => {
@@ -385,8 +421,10 @@ export const useSessionStore = create<SessionStore>((set, get) => {
     },
 
     adoptSession: (raw) => {
-      const session = SimulationSessionSchema.parse(raw);
-      const engine = Engine.restore(session.engineState);
+      const parsed = SimulationSessionSchema.parse(raw);
+      const engine = Engine.restore(parsed.engineState);
+      const session = enrichPersonaRoster(parsed, engine);
+      if (session !== parsed) persist(session);
       set({ session, engine, lastError: null });
     },
 
