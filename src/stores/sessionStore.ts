@@ -9,7 +9,6 @@ import { runScreening } from '@/engine/screening';
 import { buildTravelRulePacket } from '@/engine/travelRule';
 import { convert } from '@/engine/fx';
 import {
-  ASSETS,
   CIO_GRANTS,
   CIO_LIMITS,
   FAMILY_OFFICE_TEMPLATE,
