@@ -232,7 +232,10 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             'CoinGecko unavailable; deterministic fallback',
           ),
         );
-        set({ livePrices: null, lastError: 'Live prices unavailable — using deterministic values.' });
+        set({
+          livePrices: null,
+          lastError: 'Live prices unavailable — using deterministic values.',
+        });
       }
     },
 
