@@ -29,7 +29,9 @@ const linkClass = ({ isActive }: { isActive: boolean }) =>
 
 export function NavBar() {
   const defiEnabled = useSessionStore((s) => s.session?.settings.defiEnabled ?? false);
-  const links = defiEnabled ? [...baseLinks.slice(0, 6), defiLink, ...baseLinks.slice(6)] : baseLinks;
+  const links = defiEnabled
+    ? [...baseLinks.slice(0, 6), defiLink, ...baseLinks.slice(6)]
+    : baseLinks;
   return (
     <header className="bg-dark text-white">
       <nav

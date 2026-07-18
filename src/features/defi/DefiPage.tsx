@@ -76,9 +76,9 @@ function DefiView() {
         data-testid="defi-perimeter-banner"
       >
         <strong>Outside Meridian custody perimeter.</strong> These simulated positions are held on
-        external protocols, not under Meridian regulated custody. Meridian provides orchestration and
-        reconciliation only. No wallet is connected, no key is held, and no transaction is signed —
-        ever (simulation).
+        external protocols, not under Meridian regulated custody. Meridian provides orchestration
+        and reconciliation only. No wallet is connected, no key is held, and no transaction is
+        signed — ever (simulation).
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">

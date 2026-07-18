@@ -208,8 +208,8 @@ export function WizardPage() {
             <span>
               <span className="font-medium">Enable DeFi module (opt-in)</span>
               <span className="block text-xs text-ink-soft">
-                Adds simulated staking and liquidity-pool positions held outside the Meridian custody
-                perimeter (PLAN Section 13). Off by default; entitlement-gated.
+                Adds simulated staking and liquidity-pool positions held outside the Meridian
+                custody perimeter (PLAN Section 13). Off by default; entitlement-gated.
               </span>
             </span>
           </label>

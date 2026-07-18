@@ -15,9 +15,9 @@ const WIZARD: WizardInput = {
 
 /** Four-eyes approval (PLAN Section 12): approve as the independent signatory. */
 function approveWithSignatory(txId: string): void {
-  const signatory = useSessionStore.getState().session!.personas.find(
-    (p) => p.role === 'authorised-signatory',
-  )!;
+  const signatory = useSessionStore
+    .getState()
+    .session!.personas.find((p) => p.role === 'authorised-signatory')!;
   useSessionStore.getState().switchPersona(signatory.id);
   useSessionStore.getState().approveTransaction(txId);
 }

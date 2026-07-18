@@ -215,10 +215,12 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       // Meridian custody perimeter. Only materialised when the wizard opt-in is
       // on, so default sessions are unchanged (holdings === portfolio length).
       const defiHoldings = input.defiEnabled
-        ? ([
-            ['asset-staked-eth', 340_000],
-            ['asset-lp-share', 180_000],
-          ] as const).map(([assetRef, quantity]) => {
+        ? (
+            [
+              ['asset-staked-eth', 340_000],
+              ['asset-lp-share', 180_000],
+            ] as const
+          ).map(([assetRef, quantity]) => {
             const asset = assetById(assetRef);
             const valueInGbp = convert(market, quantity, asset.currency, 'GBP');
             return {
@@ -245,7 +247,11 @@ export const useSessionStore = create<SessionStore>((set, get) => {
       const primaryGrants = input.defiEnabled
         ? [
             ...persona.grants,
-            { relationship: 'wallet-services' as const, assetClass: 'defi' as const, level: 'view' as const },
+            {
+              relationship: 'wallet-services' as const,
+              assetClass: 'defi' as const,
+              level: 'view' as const,
+            },
           ]
         : persona.grants;
 
