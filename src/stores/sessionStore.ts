@@ -328,7 +328,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             crossCurrency: true,
           }),
           reference: nextReference(engine),
-          initiatedByPersonaId: session.activePersonaId,
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {
             ...(overLimit ? { limitWarning: 'Amount exceeds per-transaction limit' } : {}),
             targetCurrency: 'CHF',
@@ -380,7 +380,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             ts,
           }),
           reference: nextReference(engine),
-          initiatedByPersonaId: session.activePersonaId,
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {},
         };
         const next = { ...session, transactions: [...session.transactions, tx] };
@@ -429,7 +429,7 @@ export const useSessionStore = create<SessionStore>((set, get) => {
             crossCurrency: false,
           }),
           reference: nextReference(engine),
-          initiatedByPersonaId: session.activePersonaId,
+          initiatedByPersonaId: session.activePersonaId ?? undefined,
           metadata: {
             deliveryLeg: 'asset-tokenised-bond +1,000,000 USD face (from counterparty)',
             paymentLeg: 'asset-tokenised-deposit -1,000,000 USD (to counterparty)',
