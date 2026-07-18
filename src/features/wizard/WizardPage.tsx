@@ -6,6 +6,7 @@ import { Badge } from '@/components/Badge';
 import { useWizardStore } from './wizardStore';
 import { useSessionStore } from '@/stores/sessionStore';
 import { JurisdictionSchema, RelationshipSchema, type Relationship } from '@/schemas';
+import { SCENARIO_PRESETS, scenarioPreset } from '@/config/catalog';
 
 const STEPS = ['Entity', 'Relationships', 'Persona', 'Scenario seed', 'Review'] as const;
 
@@ -22,9 +23,8 @@ const RELATIONSHIP_LABELS: Record<Relationship, string> = {
 
 /**
  * Setup wizard (PLAN Section 7). Every step is deep-linkable
- * (#/wizard/step/N) and validated before advancing. M2 ships the vertical
- * slice template (single-family office / CIO); templates for all entity
- * types arrive in M3.
+ * (#/wizard/step/N) and validated before advancing. Scenario presets bundle an
+ * entity template, persona template and portfolio (config-driven, Section 32).
  */
 export function WizardPage() {
   const { step: stepParam } = useParams();
@@ -63,6 +63,7 @@ export function WizardPage() {
 
   const finish = () => {
     createSliceSession({
+      presetId: draft.presetId,
       sessionName: draft.sessionName,
       entityName: draft.entityName,
       jurisdiction: draft.jurisdiction,
@@ -89,10 +90,29 @@ export function WizardPage() {
       {step === 1 && (
         <Card title="Step 1 — Entity">
           <p className="mb-3 text-sm text-ink-soft">
-            The M2 vertical slice models a single-family office. Further entity types (corporate
-            treasury, funds, …) arrive in Milestone 3.
+            Pick a scenario preset (entity, persona and portfolio template) and adjust the entity
+            details.
           </p>
-          <label className={labelCls} htmlFor="entityName">
+          <label className={labelCls} htmlFor="preset">
+            Scenario preset
+          </label>
+          <select
+            id="preset"
+            className={inputCls}
+            value={draft.presetId}
+            onChange={(e) => draft.applyPreset(e.target.value)}
+            data-testid="preset-select"
+          >
+            {SCENARIO_PRESETS.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+          <p className="mb-3 mt-1 text-xs text-ink-soft">
+            {scenarioPreset(draft.presetId).description}
+          </p>
+          <label className={`${labelCls} mt-3`} htmlFor="entityName">
             Entity name
           </label>
           <input
@@ -144,8 +164,9 @@ export function WizardPage() {
       {step === 3 && (
         <Card title="Step 3 — Persona">
           <p className="mb-3 text-sm text-ink-soft">
-            Persona: CIO / investment director with view+approve entitlements across custody,
-            payments and wallet services, and a £1m per-transaction limit.
+            Persona role from the preset:{' '}
+            <strong>{scenarioPreset(draft.presetId).personaRole}</strong> with template entitlements
+            and limits (editable overrides arrive with the M4 controls work).
           </p>
           <label className={labelCls} htmlFor="personaName">
             Display name

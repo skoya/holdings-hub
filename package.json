@@ -20,7 +20,8 @@
     "test:watch": "vitest",
     "audit:deps": "audit-ci --moderate",
     "test:integration": "vitest run tests/integration",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "check:schemas": "vitest run tests/config"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.4",

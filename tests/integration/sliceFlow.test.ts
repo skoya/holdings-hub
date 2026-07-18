@@ -4,6 +4,7 @@ import { SimulationSessionSchema } from '@/schemas';
 import { clearAllSessions } from '@/persistence/storage';
 
 const WIZARD: WizardInput = {
+  presetId: 'family-office-cio',
   sessionName: 'Integration slice',
   entityName: 'Aldergate Family Office',
   jurisdiction: 'GB',

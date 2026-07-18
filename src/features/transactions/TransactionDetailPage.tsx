@@ -187,7 +187,7 @@ function TransactionDetailView() {
 
       <Card title="Lifecycle">
         <Suspense fallback={<p className="text-sm text-ink-soft">Loading diagram…</p>}>
-          <LifecycleDiagram currentState={tx.state} events={tx.events} />
+          <LifecycleDiagram type={tx.type} currentState={tx.state} events={tx.events} />
         </Suspense>
         <ol className="mt-4 space-y-1 text-sm" data-testid="lifecycle-events">
           {tx.events.map((e, i) => (
