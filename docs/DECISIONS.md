@@ -191,7 +191,7 @@ session 2; session 1 tagged `v0.5.0-m5` and `v0.6.0-m6` without appending them.
   because React and xyflow render inline style attributes; a static site has no
   script-injection sink — import is the only untrusted input and is Zod-parsed.
 - **Import fuzz suite guards the one untrusted boundary** (`tests/schemas/
-  fuzz.test.ts`): hostile/malformed payloads are rejected via `safeParse`;
+fuzz.test.ts`): hostile/malformed payloads are rejected via `safeParse`;
   `__proto__`/`constructor` payloads do not pollute `Object.prototype` (Zod
   strips unknown keys); a 10k-deep object is rejected without a stack overflow.
   The 5 MB size cap stays at the UI boundary (`LibraryPage`).

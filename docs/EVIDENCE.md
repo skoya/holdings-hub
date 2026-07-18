@@ -44,35 +44,35 @@ Expansion policy: +3 or more entries per milestone, completed register by M8.
 
 ## M5 additions — i18n & market data/calendar
 
-| #   | Claim supported                                                                     | Source                                                     | URL                                                                                | Checked    |
-| --- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- | ---------- |
-| 29  | Locale-aware number/date/currency formatting via a standard browser API             | ECMAScript Internationalization API (ECMA-402) / MDN Intl | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl | 2026-07-18 |
-| 30  | Free read-only reference crypto prices for the optional live-price overlay          | CoinGecko public API documentation                        | https://www.coingecko.com/en/api/documentation                                     | 2026-07-18 |
-| 31  | Currency cut-off / settlement-calendar differences between rails (SWIFT vs 24/7)    | SWIFT gpi payment tracking & cut-off documentation        | https://www.swift.com/our-solutions/swift-gpi                                       | 2026-07-18 |
+| #   | Claim supported                                                                  | Source                                                    | URL                                                                                   | Checked    |
+| --- | -------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------- |
+| 29  | Locale-aware number/date/currency formatting via a standard browser API          | ECMAScript Internationalization API (ECMA-402) / MDN Intl | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl | 2026-07-18 |
+| 30  | Free read-only reference crypto prices for the optional live-price overlay       | CoinGecko public API documentation                        | https://www.coingecko.com/en/api/documentation                                        | 2026-07-18 |
+| 31  | Currency cut-off / settlement-calendar differences between rails (SWIFT vs 24/7) | SWIFT gpi payment tracking & cut-off documentation        | https://www.swift.com/our-solutions/swift-gpi                                         | 2026-07-18 |
 
 ## M6 additions — persistence & library
 
-| #   | Claim supported                                                                | Source                                    | URL                                                                            | Checked    |
-| --- | ------------------------------------------------------------------------------ | ----------------------------------------- | ------------------------------------------------------------------------------ | ---------- |
-| 32  | Browser IndexedDB as the capacity-appropriate store for the Simulation Library | W3C Indexed Database API (IndexedDB)      | https://www.w3.org/TR/IndexedDB/                                               | 2026-07-18 |
-| 33  | Portable session bundles (ZIP) for export/import round-trips                   | PKWARE .ZIP File Format Specification     | https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT                     | 2026-07-18 |
+| #   | Claim supported                                                                | Source                                | URL                                                         | Checked    |
+| --- | ------------------------------------------------------------------------------ | ------------------------------------- | ----------------------------------------------------------- | ---------- |
+| 32  | Browser IndexedDB as the capacity-appropriate store for the Simulation Library | W3C Indexed Database API (IndexedDB)  | https://www.w3.org/TR/IndexedDB/                            | 2026-07-18 |
+| 33  | Portable session bundles (ZIP) for export/import round-trips                   | PKWARE .ZIP File Format Specification | https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT | 2026-07-18 |
 
 ## M7 additions — accessibility
 
-| #   | Claim supported                                                            | Source                                         | URL                                                     | Checked    |
-| --- | ------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- | ---------- |
-| 34  | WCAG 2.1 AA is the accessibility conformance target for the prototype     | W3C — Web Content Accessibility Guidelines 2.1 | https://www.w3.org/TR/WCAG21/                            | 2026-07-18 |
-| 35  | ARIA roles/states used for dialog, nav landmarks and the diagram grouping | W3C — WAI-ARIA 1.2 / ARIA Authoring Practices  | https://www.w3.org/TR/wai-aria-1.2/                     | 2026-07-18 |
-| 36  | Automated accessibility assertions (axe-core rules) as the CI backstop    | Deque axe-core rule descriptions               | https://dequeuniversity.com/rules/axe/                  | 2026-07-18 |
+| #   | Claim supported                                                           | Source                                         | URL                                    | Checked    |
+| --- | ------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------- | ---------- |
+| 34  | WCAG 2.1 AA is the accessibility conformance target for the prototype     | W3C — Web Content Accessibility Guidelines 2.1 | https://www.w3.org/TR/WCAG21/          | 2026-07-18 |
+| 35  | ARIA roles/states used for dialog, nav landmarks and the diagram grouping | W3C — WAI-ARIA 1.2 / ARIA Authoring Practices  | https://www.w3.org/TR/wai-aria-1.2/    | 2026-07-18 |
+| 36  | Automated accessibility assertions (axe-core rules) as the CI backstop    | Deque axe-core rule descriptions               | https://dequeuniversity.com/rules/axe/ | 2026-07-18 |
 
 ## M8 additions — security hardening
 
-| #   | Claim supported                                                              | Source                                                   | URL                                                                     | Checked    |
-| --- | ---------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------- | ---------- |
-| 37  | Content Security Policy directives constraining script/style/connect origins | MDN — Content-Security-Policy                            | https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy | 2026-07-18 |
-| 38  | Prototype-pollution and injection defences on the untrusted import boundary  | OWASP — Prototype Pollution Prevention Cheat Sheet       | https://cheatsheetseries.owasp.org/cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.html | 2026-07-18 |
-| 39  | Open-source vulnerability scanning of the dependency lockfile                | Google OSV (Open Source Vulnerabilities) / OSV-Scanner   | https://osv.dev/                                                         | 2026-07-18 |
-| 40  | Baseline application security verification requirements                      | OWASP Application Security Verification Standard (ASVS)   | https://owasp.org/www-project-application-security-verification-standard/ | 2026-07-18 |
+| #   | Claim supported                                                              | Source                                                  | URL                                                                                            | Checked    |
+| --- | ---------------------------------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------- |
+| 37  | Content Security Policy directives constraining script/style/connect origins | MDN — Content-Security-Policy                           | https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy              | 2026-07-18 |
+| 38  | Prototype-pollution and injection defences on the untrusted import boundary  | OWASP — Prototype Pollution Prevention Cheat Sheet      | https://cheatsheetseries.owasp.org/cheatsheets/Prototype_Pollution_Prevention_Cheat_Sheet.html | 2026-07-18 |
+| 39  | Open-source vulnerability scanning of the dependency lockfile                | Google OSV (Open Source Vulnerabilities) / OSV-Scanner  | https://osv.dev/                                                                               | 2026-07-18 |
+| 40  | Baseline application security verification requirements                      | OWASP Application Security Verification Standard (ASVS) | https://owasp.org/www-project-application-security-verification-standard/                      | 2026-07-18 |
 
 **Register status: completed at M8 (v1.0.0)** — 40 real entries spanning
 regulation (FATF R.16, MiCA, EU TFR), live tokenisation/CBDC programmes,

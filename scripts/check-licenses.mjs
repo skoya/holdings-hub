@@ -62,7 +62,9 @@ const forbidden = [];
 const unknown = [];
 
 for (const [license, pkgs] of Object.entries(data)) {
-  const names = (Array.isArray(pkgs) ? pkgs : []).map((p) => `${p.name}@${p.versions?.join(',') ?? p.version ?? '?'}`);
+  const names = (Array.isArray(pkgs) ? pkgs : []).map(
+    (p) => `${p.name}@${p.versions?.join(',') ?? p.version ?? '?'}`,
+  );
   if (atomsAllowed(license)) continue;
   if (FORBIDDEN.test(license) && !atomsAllowed(license)) {
     forbidden.push(`${license}: ${names.join(', ')}`);

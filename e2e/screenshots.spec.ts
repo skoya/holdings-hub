@@ -12,7 +12,8 @@ test.describe('screenshots', () => {
     // Only the Chromium project produces the canonical gallery.
     test.skip(testInfo.project.name !== 'chromium', 'chromium captures the gallery');
 
-    const shot = (name: string) => page.screenshot({ path: `screenshots/${name}.png`, fullPage: true });
+    const shot = (name: string) =>
+      page.screenshot({ path: `screenshots/${name}.png`, fullPage: true });
 
     await page.goto('/');
     await page.waitForSelector('#main');
