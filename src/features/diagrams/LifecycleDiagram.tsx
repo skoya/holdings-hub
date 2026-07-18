@@ -58,7 +58,11 @@ export function LifecycleDiagram({
   }));
 
   return (
-    <div style={{ height: 340 }} aria-label={`${def.title} diagram`} role="img">
+    // `role="group"` (not `img`): the pane is interactive (pan/zoom) and holds
+    // focusable descendants, which an `img` leaf role must not — that tripped
+    // axe's aria-hidden-focus rule. `hideAttribution` removes xyflow's default
+    // attribution link, whose #999-on-white text failed AA contrast.
+    <div style={{ height: 340 }} aria-label={`${def.title} diagram`} role="group">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -68,6 +72,7 @@ export function LifecycleDiagram({
         elementsSelectable={false}
         panOnDrag
         zoomOnScroll={false}
+        proOptions={{ hideAttribution: true }}
       >
         <Background />
       </ReactFlow>
