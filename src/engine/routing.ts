@@ -2,6 +2,30 @@ import type { Jurisdiction, RouteComparison, TransactionType } from '@/schemas';
 import { addMinutes, fiatSettlementDate } from './calendar';
 import type { Stream } from './prng';
 
+export interface RouteEconomics {
+  /** All-in cost in the send currency: flat fee + cost bps + FX spread bps. */
+  totalCost: number;
+  /** Estimated amount delivered to the beneficiary, in the target currency. */
+  estimatedReceived: number;
+}
+
+/**
+ * Derive all-in economics for a route option (pure; no draws, so it is safe to
+ * call at render time). `fxRate` converts the post-cost send amount into the
+ * beneficiary's currency; pass 1 for same-currency rails.
+ */
+export function routeEconomics(
+  option: { costBps: number; feeFlat: number; fxSpreadBps: number },
+  amount: number,
+  fxRate: number,
+): RouteEconomics {
+  const feeCost = option.feeFlat + (amount * option.costBps) / 10_000;
+  const spreadCost = (amount * option.fxSpreadBps) / 10_000;
+  const totalCost = feeCost + spreadCost;
+  const estimatedReceived = (amount - totalCost) * fxRate;
+  return { totalCost, estimatedReceived };
+}
+
 /**
  * Route recommendation engine (PLAN Section 11). Candidate routes are scored
  * on simulated cost, speed, FX spread and calendar constraints. The user's

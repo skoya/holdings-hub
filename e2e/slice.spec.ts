@@ -24,6 +24,13 @@ test.describe('vertical slice golden path (Family Office CIO)', () => {
     await expect(page.getByText('settled', { exact: true }).first()).toBeVisible();
     await expect(page.getByTestId('route-comparison')).toContainText('SWIFT correspondent chain');
     await expect(page.getByTestId('route-comparison')).toContainText('USDC stablecoin rail');
+    // Rail economics (enhancement): each rail shows the estimated amount the
+    // beneficiary receives, and the delta callout quantifies the difference.
+    await expect(page.getByTestId('route-received-stablecoin')).toContainText('CHF');
+    await expect(page.getByTestId('route-received-swift-correspondent')).toContainText('CHF');
+    await expect(page.getByTestId('route-economics-delta')).toContainText(
+      'more to the beneficiary',
+    );
     await expect(page.getByTestId('lifecycle-events')).toContainText('in-flight');
 
     // Timeline and audit reflect the transaction.

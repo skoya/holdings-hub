@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createEngine } from '@/engine/prng';
 import { canTransition, assertTransition, latencyMinutes } from '@/engine/lifecycle';
 import { fiatSettlementDate, isBusinessDay, addMinutes } from '@/engine/calendar';
-import { buildRouteComparison } from '@/engine/routing';
+import { buildRouteComparison, routeEconomics } from '@/engine/routing';
 import { runScreening } from '@/engine/screening';
 import { buildTravelRulePacket, TRAVEL_RULE_THRESHOLD_USD } from '@/engine/travelRule';
 import { fxRate } from '@/engine/fx';
@@ -136,5 +136,29 @@ describe('fx', () => {
     expect(rate).toBeGreaterThan(1.1);
     expect(rate).toBeLessThan(1.14);
     expect(() => fxRate(market, 'GBP', 'XXX')).toThrow(RangeError);
+  });
+});
+
+describe('route economics (enhancement)', () => {
+  it('nets flat fee + cost bps + FX spread, then converts to the target currency', () => {
+    // 100,000 GBP; 30 bps cost + 25 flat + 30 bps spread; rate 1.10.
+    const e = routeEconomics({ costBps: 30, feeFlat: 25, fxSpreadBps: 30 }, 100_000, 1.1);
+    // fee = 25 + 100000*0.003 = 325; spread = 100000*0.003 = 300; cost = 625.
+    expect(e.totalCost).toBeCloseTo(625, 6);
+    expect(e.estimatedReceived).toBeCloseTo((100_000 - 625) * 1.1, 6);
+  });
+
+  it('applies no FX spread cost on a same-currency (spread 0) rail', () => {
+    const e = routeEconomics({ costBps: 2, feeFlat: 0.5, fxSpreadBps: 0 }, 100_000, 1);
+    expect(e.totalCost).toBeCloseTo(0.5 + 20, 6); // 100000*0.0002 = 20
+    expect(e.estimatedReceived).toBeCloseTo(100_000 - 20.5, 6);
+  });
+
+  it('a cheaper rail delivers strictly more to the beneficiary at the same FX rate', () => {
+    const amount = 250_000;
+    const rate = 1.12;
+    const swift = routeEconomics({ costBps: 30, feeFlat: 25, fxSpreadBps: 30 }, amount, rate);
+    const stable = routeEconomics({ costBps: 3, feeFlat: 0.5, fxSpreadBps: 0 }, amount, rate);
+    expect(stable.estimatedReceived).toBeGreaterThan(swift.estimatedReceived);
   });
 });

@@ -5,6 +5,7 @@ import { nextId, nextReference } from '@/engine/ids';
 import { addMinutes } from '@/engine/calendar';
 import { assertTransition, latencyMinutes } from '@/engine/lifecycle';
 import { buildRouteComparison } from '@/engine/routing';
+import { fxRate } from '@/engine/fx';
 import { runScreening } from '@/engine/screening';
 import { fetchLivePrices } from '@/engine/marketData';
 import { evaluateTransaction, hasBlockingDecision, relationshipForType } from '@/engine/policy';
@@ -441,6 +442,10 @@ export const useSessionStore = create<SessionStore>((set, get) => {
           metadata: {
             ...(overLimit ? { limitWarning: 'Amount exceeds per-transaction limit' } : {}),
             targetCurrency: 'CHF',
+            // Indicative GBP→CHF rate captured once at creation from a dedicated
+            // `fx` stream so it never perturbs other namespaced streams (Section
+            // 23) and replays identically. Indicative only — not a quoted rate.
+            indicativeFxRate: String(fxRate(engine.fork('fx'), 'GBP', 'CHF')),
           },
         };
         const next = { ...session, transactions: [...session.transactions, tx] };
