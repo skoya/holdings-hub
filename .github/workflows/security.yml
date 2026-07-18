@@ -28,6 +28,6 @@ jobs:
       # are the fast deterministic checks (avoids PR-blocking on a transitive
       # advisory the weekly scan is meant to triage).
       - if: github.event_name != 'pull_request'
-        uses: google/osv-scanner-action/osv-scanner-action@v1
+        uses: google/osv-scanner-action/osv-scanner-action@v2.3.8
         with:
           scan-args: --lockfile=pnpm-lock.yaml
