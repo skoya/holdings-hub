@@ -80,7 +80,13 @@ export function RightPanel() {
             className="rounded p-1.5 text-white/60 hover:bg-dark-2 hover:text-white"
           >
             {/* ✕ */}
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 16 16">
+            <svg
+              className="h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              viewBox="0 0 16 16"
+            >
               <path d="M3 3l10 10M13 3L3 13" strokeLinecap="round" />
             </svg>
           </button>
@@ -125,12 +131,24 @@ export function PanelToggles() {
             }`}
           >
             {tab === 'timeline' ? (
-              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 16 16">
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 16 16"
+              >
                 <path d="M2 8h12M8 2v12" strokeLinecap="round" />
                 <circle cx="8" cy="8" r="1.5" fill="currentColor" />
               </svg>
             ) : (
-              <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 16 16">
+              <svg
+                className="h-3.5 w-3.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 16 16"
+              >
                 <circle cx="4" cy="4" r="2" />
                 <circle cx="12" cy="4" r="2" />
                 <circle cx="8" cy="12" r="2" />

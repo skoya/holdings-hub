@@ -126,7 +126,10 @@ export function TimelineView() {
             const inPast = isLive || e.ts <= cursorTs;
             const txRef = e.objectRef.startsWith('tx:') ? e.objectRef.slice(3) : null;
             return (
-              <li key={e.id} className={`relative transition-opacity ${inPast ? '' : 'opacity-30'}`}>
+              <li
+                key={e.id}
+                className={`relative transition-opacity ${inPast ? '' : 'opacity-30'}`}
+              >
                 <span
                   className={`absolute -left-[1.85rem] top-1 h-3 w-3 rounded-full border-2 border-panel ${
                     inPast ? 'bg-dark' : 'bg-line'

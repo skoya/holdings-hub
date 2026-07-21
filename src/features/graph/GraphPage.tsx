@@ -147,9 +147,7 @@ export function GraphView() {
         <h1 className="text-xl font-semibold">Entity & network graph</h1>
         {timeCursor ? (
           <div className="flex items-center gap-2">
-            <Badge tone="neutral">
-              Replaying at {timeCursor} UTC
-            </Badge>
+            <Badge tone="neutral">Replaying at {timeCursor} UTC</Badge>
             <button
               onClick={() => setTimeCursor(null)}
               className="rounded px-2 py-0.5 text-xs text-accent underline hover:no-underline"
