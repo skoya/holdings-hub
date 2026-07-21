@@ -38,7 +38,7 @@ const KIND_COLOR: Record<GraphNode['kind'], string> = {
  * an SVG-only rendering — the canvas/SVG hybrid is deferred until catalogue
  * expansion makes graphs large enough to need it (logged in DECISIONS.md).
  */
-function GraphView() {
+export function GraphView() {
   const session = useSessionStore((s) => s.session)!;
   const timeCursor = useUiStore((s) => s.timeCursor);
   const setTimeCursor = useUiStore((s) => s.setTimeCursor);

@@ -14,7 +14,7 @@ import { Link } from 'react-router-dom';
  * The time scrubber at the top sets the shared timeCursor in uiStore. Events
  * after the cursor are dimmed, and the Graph page reflects the same moment.
  */
-function TimelineView() {
+export function TimelineView() {
   const session = useSessionStore((s) => s.session)!;
   const { timeCursor, setTimeCursor } = useUiStore();
   const [filter, setFilter] = useState<'all' | 'transaction' | 'screening' | 'persona' | 'session'>(

@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { NavBar } from '@/components/NavBar';
+import { RightPanel, PanelToggles } from '@/components/RightPanel';
 import { DisclaimerBanner } from './DisclaimerBanner';
 import { DiagnosticsPanel } from './DiagnosticsPanel';
 
@@ -19,6 +20,10 @@ export function Layout() {
         Meridian Bank is a fictional institution created for this simulation prototype. No real
         transactions, investment advice, or affiliation with any real bank.
       </footer>
+
+      {/* Floating side panel (Timeline / Graph) — renders above all page content */}
+      <RightPanel />
+      <PanelToggles />
     </div>
   );
 }
