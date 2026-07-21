@@ -8,14 +8,16 @@ import {
   type SimulationNodeDatum,
 } from 'd3-force';
 import { Card } from '@/components/Card';
+import { Badge } from '@/components/Badge';
 import { SessionGuard } from '@/features/common/SessionGuard';
 import { useSessionStore } from '@/stores/sessionStore';
+import { useUiStore } from '@/stores/uiStore';
 import { assetById } from '@/config/catalog';
 
 interface GraphNode extends SimulationNodeDatum {
   id: string;
   label: string;
-  kind: 'bank' | 'entity' | 'persona' | 'holding' | 'network' | 'custodian';
+  kind: 'bank' | 'entity' | 'persona' | 'holding' | 'network' | 'custodian' | 'transaction';
   active?: boolean;
 }
 
@@ -28,6 +30,7 @@ const KIND_COLOR: Record<GraphNode['kind'], string> = {
   holding: 'var(--ink-soft)',
   network: '#7c6f9f',
   custodian: '#4e7d6b',
+  transaction: '#b07d2e',
 };
 
 /**
@@ -37,8 +40,40 @@ const KIND_COLOR: Record<GraphNode['kind'], string> = {
  */
 function GraphView() {
   const session = useSessionStore((s) => s.session)!;
+  const timeCursor = useUiStore((s) => s.timeCursor);
+  const setTimeCursor = useUiStore((s) => s.setTimeCursor);
   const svgRef = useRef<SVGSVGElement>(null);
   const [positions, setPositions] = useState<Map<string, { x: number; y: number }>>(new Map());
+
+  // Derive the persona that was active at the cursor time by replaying
+  // persona.activated events from the audit log up to the cursor timestamp.
+  const effectiveActivePersonaId = useMemo(() => {
+    if (!timeCursor) return session.activePersonaId;
+    const activations = session.auditLog
+      .filter((e) => e.action === 'persona.activated' && e.ts <= timeCursor)
+      .sort((a, b) => a.ts.localeCompare(b.ts));
+    const last = activations[activations.length - 1];
+    return last ? last.objectRef.replace('persona:', '') : session.activePersonaId;
+  }, [session, timeCursor]);
+
+  // Transactions that had been created at or before the cursor time.
+  const visibleTransactions = useMemo(() => {
+    if (!timeCursor) return session.transactions;
+    return session.transactions.filter((tx) => tx.createdAt <= timeCursor);
+  }, [session.transactions, timeCursor]);
+
+  // For each visible transaction, find its state at the cursor time.
+  const txStateAtCursor = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const tx of visibleTransactions) {
+      const eventsAtCursor = tx.events
+        .filter((ev) => !timeCursor || ev.ts <= timeCursor)
+        .sort((a, b) => a.ts.localeCompare(b.ts));
+      const last = eventsAtCursor[eventsAtCursor.length - 1];
+      map.set(tx.id, last?.state ?? tx.state);
+    }
+    return map;
+  }, [visibleTransactions, timeCursor]);
 
   const { nodes, links } = useMemo(() => {
     const nodes: GraphNode[] = [{ id: 'meridian', label: 'Meridian Bank (hub)', kind: 'bank' }];
@@ -52,7 +87,7 @@ function GraphView() {
         id: persona.id,
         label: persona.displayName,
         kind: 'persona',
-        active: persona.id === session.activePersonaId,
+        active: persona.id === effectiveActivePersonaId,
       });
       links.push({ source: persona.entityId, target: persona.id });
     }
@@ -79,8 +114,16 @@ function GraphView() {
         links.push({ source: holding.id, target: custId });
       }
     }
+    // Add transaction nodes visible at the cursor time.
+    for (const tx of visibleTransactions) {
+      const state = txStateAtCursor.get(tx.id) ?? tx.state;
+      const label = `${tx.type.replace(/-/g, ' ')} (${state})`;
+      nodes.push({ id: tx.id, label, kind: 'transaction' as GraphNode['kind'] });
+      const owner = session.entities[0]?.id ?? 'meridian';
+      links.push({ source: owner, target: tx.id });
+    }
     return { nodes, links };
-  }, [session]);
+  }, [session, effectiveActivePersonaId, visibleTransactions, txStateAtCursor]);
 
   useEffect(() => {
     const sim = forceSimulation(nodes)
@@ -100,7 +143,24 @@ function GraphView() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Entity & network graph</h1>
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h1 className="text-xl font-semibold">Entity & network graph</h1>
+        {timeCursor ? (
+          <div className="flex items-center gap-2">
+            <Badge tone="neutral">
+              Replaying at {timeCursor} UTC
+            </Badge>
+            <button
+              onClick={() => setTimeCursor(null)}
+              className="rounded px-2 py-0.5 text-xs text-accent underline hover:no-underline"
+            >
+              Return to live
+            </button>
+          </div>
+        ) : (
+          <Badge tone="neutral">Live</Badge>
+        )}
+      </div>
       <Card>
         <p className="mb-3 text-sm text-ink-soft">
           Meridian as the orchestration hub: client entity, persona, holdings, settlement networks
