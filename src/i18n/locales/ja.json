@@ -17,7 +17,11 @@
     "defi": "DeFi",
     "library": "ライブラリ",
     "mobile": "モバイル",
-    "styleguide": "スタイルガイド"
+    "styleguide": "スタイルガイド",
+    "group": {
+      "analytics": "分析",
+      "tools": "ツール"
+    }
   },
   "language": {
     "label": "言語",

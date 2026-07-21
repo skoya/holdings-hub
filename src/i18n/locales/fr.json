@@ -17,7 +17,11 @@
     "defi": "DeFi",
     "library": "Bibliothèque",
     "mobile": "Mobile",
-    "styleguide": "Styleguide"
+    "styleguide": "Styleguide",
+    "group": {
+      "analytics": "Analytique",
+      "tools": "Outils"
+    }
   },
   "language": {
     "label": "Langue",
