@@ -90,9 +90,7 @@ function NavDropdown({ group }: { group: NavGroup }) {
         aria-expanded={open}
         aria-haspopup="true"
         className={`rounded px-2.5 py-1.5 text-sm transition-colors ${
-          isGroupActive
-            ? 'bg-dark-2 text-white'
-            : 'text-white/80 hover:bg-dark-2 hover:text-white'
+          isGroupActive ? 'bg-dark-2 text-white' : 'text-white/80 hover:bg-dark-2 hover:text-white'
         }`}
       >
         {t(group.labelKey)}
